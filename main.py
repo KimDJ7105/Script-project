@@ -15,6 +15,8 @@ class MainGUI :
         nb.add(framek,text='요양시설')
         frame2 = Frame(window) #전문병원 검색할 탭
         nb.add(frame2,text='전문병원')
+        frame3 = Frame(window) #여가복지시설(경로당) 검색 탭
+        nb.add(frame3,text='여가복지시설')
         
         window.mainloop()
 
