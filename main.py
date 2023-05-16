@@ -26,10 +26,14 @@ class MainGUI :
         self.frame7 = Frame(window) #즐겨찾기 탭
         nb.add(self.frame7,text='즐겨찾기')
 
+        #요양시설 탭에 필요한 구성품들
         self.e1 = Entry(self.frame1, width=19)
         self.e1.place(x=10, y=10)
         Button(self.frame1, text='검색').place(x=150, y=10)
-
+        
+        hospital_list = Listbox(self.frame1, width=60,height=20)
+        hospital_list.place(x=0,y=200)
+        
         self.e2 = Entry(self.frame2, width=19)
         self.e2.place(x=10, y=10)
         Button(self.frame2, text='검색').place(x=150, y=10)
@@ -53,10 +57,6 @@ class MainGUI :
         self.e7 = Entry(self.frame7, width=19)
         self.e7.place(x=10, y=10)
         Button(self.frame7, text='검색').place(x=150, y=10)
-
-
-
-        
         
         window.mainloop()
 
