@@ -3,8 +3,8 @@ import tkinter.messagebox
 import tkinter.ttk
 
 
-<<<<<<< Updated upstream
 class MainGUI :
+
     def searchButton(self):
         self.e = {}  # 딕셔너리를 초기화
         for i in range(1, 7):
@@ -12,9 +12,10 @@ class MainGUI :
             self.e[i].place(x=10, y=10)
             Button(self.frame[i], text='검색').place(x=150, y=10)
 
-=======
 class MainGUI:
->>>>>>> Stashed changes
+    def serch(self,page) :
+        pass
+
     def __init__(self) :
         window = Tk()
         window.title("노인통합 서비스")
@@ -22,8 +23,6 @@ class MainGUI:
         
         nb = tkinter.ttk.Notebook(window,width=800,height=600)
         nb.pack()
-        
-<<<<<<< Updated upstream
         self.frame1 = Frame(window) #요양시설 검색할 탭
         nb.add(self.frame1,text='요양시설')
         self.frame2 = Frame(window) #전문병원 검색할 탭
@@ -41,9 +40,6 @@ class MainGUI:
 
         searchButton()
 
-
-
-=======
         frame1 = Frame(window) #요양시설 검색할 탭
         nb.add(frame1,text='요양시설')
         frame2 = Frame(window) #전문병원 검색할 탭
@@ -58,8 +54,31 @@ class MainGUI:
         nb.add(frame6,text='주거복지시설')
         frame7 = Frame(window) #즐겨찾기 탭
         nb.add(frame7,text='즐겨찾기')
->>>>>>> Stashed changes
+        self.framelist = []
+        
+        for _ in range(7) :
+            self.framelist.append(Frame(window))
+        
+        nb.add(self.framelist[0],text='요양시설')
+        nb.add(self.framelist[1],text='전문병원')
+        nb.add(self.framelist[2],text='여가복지시설')
+        nb.add(self.framelist[3],text='의료복지시설')
+        nb.add(self.framelist[4],text='일자리지원기관')
+        nb.add(self.framelist[5],text='주거복지시설')
+        nb.add(self.framelist[6],text='즐겨찾기')
 
+        self.entrylist = []
+        
+        for i in range(7) :
+            self.entrylist.append(Entry(self.framelist[i],width=19))
+            self.entrylist[i].place(x=10,y=10)
+            
+            Button(self.framelist[i], text='검색',command=lambda : self.serch(i)).place(x=150, y=10)
+        
+        #요양시설 탭에 필요한 구성품들
+        
+        hospital_list = Listbox(self.framelist[0], width=60,height=20)
+        hospital_list.place(x=0,y=200)
         window.mainloop()
 
 
