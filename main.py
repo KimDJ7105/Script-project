@@ -3,6 +3,13 @@ import tkinter.ttk
 
 
 class MainGUI :
+    def searchButton(self):
+        self.e = {}  # 딕셔너리를 초기화
+        for i in range(1, 7):
+            self.e[i] = Entry(self.frame[i], width=19)
+            self.e[i].place(x=10, y=10)
+            Button(self.frame[i], text='검색').place(x=150, y=10)
+
     def __init__(self) :
         window = Tk()
         window.title("노인통합 서비스")
@@ -26,38 +33,11 @@ class MainGUI :
         self.frame7 = Frame(window) #즐겨찾기 탭
         nb.add(self.frame7,text='즐겨찾기')
 
-        self.e1 = Entry(self.frame1, width=19)
-        self.e1.place(x=10, y=10)
-        Button(self.frame1, text='검색').place(x=150, y=10)
-
-        self.e2 = Entry(self.frame2, width=19)
-        self.e2.place(x=10, y=10)
-        Button(self.frame2, text='검색').place(x=150, y=10)
-
-        self.e3 = Entry(self.frame3, width=19)
-        self.e3.place(x=10, y=10)
-        Button(self.frame3, text='검색').place(x=150, y=10)
-
-        self.e4 = Entry(self.frame4, width=19)
-        self.e4.place(x=10, y=10)
-        Button(self.frame4, text='검색').place(x=150, y=10)
-
-        self.e5 = Entry(self.frame5, width=19)
-        self.e5.place(x=10, y=10)
-        Button(self.frame5, text='검색').place(x=150, y=10)
-
-        self.e6 = Entry(self.frame6, width=19)
-        self.e6.place(x=10, y=10)
-        Button(self.frame6, text='검색').place(x=150, y=10)
-
-        self.e7 = Entry(self.frame7, width=19)
-        self.e7.place(x=10, y=10)
-        Button(self.frame7, text='검색').place(x=150, y=10)
+        searchButton()
 
 
 
-        
-        
+
         window.mainloop()
 
 
