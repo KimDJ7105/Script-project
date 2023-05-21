@@ -22,10 +22,13 @@ class MainGUI:
             
             for item in root.iter('row'):
                 name = item.findtext('BIZPLC_NM') #시설명
+                capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
                 qual = item.findtext('QUALFCTN_POSESN_PSN_CNT') #자격증 소유 인원
                 area = item.findtext('LOCPLC_AR') #면적
-            
-            self.lboxlist[tab_index].insert(END,response.text)
+                
+                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + "입소 정원 : " + capa + "자격소유인원 : " + qual + "면적 : " + area)
+
 
         elif tab_index == 1:
             # 전문병원 검색
@@ -50,7 +53,17 @@ class MainGUI:
 
             # for result in self.search_results:
             #     result_list.insert(END, result)
-            self.lboxlist[tab_index].insert(END,response.text)
+            root = ET.fromstring(response.text)
+            
+            for item in root.iter('row'):
+                name = item.findtext('HOSPTL_NM') #병원명
+                capa = item.findtext('SICKBD_CNT') #병상 수
+                qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
+                area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
+                
+                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
+                #위치 정보도 있음, 홈페이지 주소도.
+                self.lboxlist[tab_index].insert(END,"병원명 : " + name + "병상 수 : " + capa  + "진료 과목 내용 : (" + qual + "개), " + area)
         
         elif tab_index == 2:
             # 여가복지시설 검색
