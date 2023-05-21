@@ -1,6 +1,7 @@
 from tkinter import *
 import requests
 import tkinter.ttk
+import xml.etree.ElementTree as ET
 import json
 
 key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
@@ -9,12 +10,20 @@ class MainGUI:
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
         self.search_results = []  # 검색 결과 초기화
+        root = NONE
 
         if tab_index == 0:
             # 요양시설 검색
             url = f'https://openapi.gg.go.kr/OldPersonRecuperationFacility'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url, params=params)
+            
+            root = ET.fromstring(response.text)
+            
+            for item in root.iter('row'):
+                name = item.findtext('BIZPLC_NM') #시설명
+                qual = item.findtext('QUALFCTN_POSESN_PSN_CNT') #자격증 소유 인원
+                area = item.findtext('LOCPLC_AR') #면적
             
             self.lboxlist[tab_index].insert(END,response.text)
 
