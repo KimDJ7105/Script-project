@@ -99,39 +99,35 @@ class MainGUI:
 
         elif tab_index == 4:
             # 일자리지원기관 검색
-            url = f''
+            url = f'https://openapi.gg.go.kr/OldpsnJobSportInst'
             params ={'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url)
             
             root = ET.fromstring(response.text)
             
             for item in root.iter('row'):
-                name = item.findtext('HOSPTL_NM') #병원명
-                capa = item.findtext('SICKBD_CNT') #병상 수
-                qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
-                area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
+                name = item.findtext('FACLT_NM') #시설명
+                qual = item.findtext('ENFLPSN_PSN_CAPA') #종사자정원
+                instl = item.findtext('PRVATE_INSTL_DIV_NM') #설치 주체
+                op = item.findtext('INSTL_MAINBD_DIV_NM') #운영 주체
                 
-                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
-                #위치 정보도 있음, 홈페이지 주소도.
-                self.lboxlist[tab_index].insert(END,"병원명 : " + name + "병상 수 : " + capa  + "진료 과목 내용 : (" + qual + "개), " + area)
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 종사자 정원 : " + qual + " 설치/운영 : " + instl + " / " + op)
 
         elif tab_index == 5:
             # 주거복지시설 검색
-            url = f''
+            url = f'https://openapi.gg.go.kr/OldpsnHousngWelfaclt'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url)
             
             root = ET.fromstring(response.text)
             
             for item in root.iter('row'):
-                name = item.findtext('HOSPTL_NM') #병원명
-                capa = item.findtext('SICKBD_CNT') #병상 수
-                qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
-                area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
+                name = item.findtext('FACLT_NM') #시설명
+                lot_type = item.findtext('LOTOUT_TYPE') #분양유형
+                qual = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
+                c_capa = item.findtext('ENTRNC_PSTPSN_SUM') #입소현원
                 
-                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
-                #위치 정보도 있음, 홈페이지 주소도.
-                self.lboxlist[tab_index].insert(END,"병원명 : " + name + "병상 수 : " + capa  + "진료 과목 내용 : (" + qual + "개), " + area)
+                self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 총 세대수 / 입소현원 : " + qual + " / " + c_capa)
 
     def __init__(self):
         window = Tk()
