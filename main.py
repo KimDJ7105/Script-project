@@ -10,7 +10,8 @@ class MainGUI:
         search_query = self.entrylist[tab_index].get()
         self.search_results = []  # 검색 결과 초기화
         root = NONE
-        self.lboxlist[tab_index].delete(0,END)
+        #print(self.lboxlist[tab_index][self.lboxlist[tab_index].curselection()[0]])
+        #self.lboxlist[tab_index].delete(0,END)
 
         if tab_index == 0:
             # 요양시설 검색
@@ -142,8 +143,9 @@ class MainGUI:
         Button(self.framelist[5], text='검색', command=lambda: self.search(5)).place(x=150, y=10)
         Button(self.framelist[6], text='검색', command=lambda: self.search(6)).place(x=150, y=10)
         
-        self.entrylist = []
+        self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
+        self.labellist = [] #라벨이 담길 리스트
 
         for i in range(7):
             self.entrylist.append(Entry(self.framelist[i], width=19))
@@ -151,6 +153,9 @@ class MainGUI:
             
             self.lboxlist.append(Listbox(self.framelist[i],width=60,height=10))
             self.lboxlist[i].place(x=5,y=80)
+            
+            self.labellist.append(Label(self.framelist[i],bg='white',width=60,height=25))
+            self.labellist[i].place(x=5,y=250)
 
         window.mainloop()
 
