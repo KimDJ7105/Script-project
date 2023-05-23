@@ -69,7 +69,9 @@ class MainGUI:
             # 여가복지시설 검색
             url = f'https://openapi.gg.go.kr/SenircentFaclt'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
-            response = requests.get(url)
+            response = requests.get(url,params=params)
+            
+            print(response.text)
             
             root = ET.fromstring(response.text)
             
@@ -85,7 +87,7 @@ class MainGUI:
             # 의료복지시설 검색
             url = f'https://openapi.gg.go.kr/OldpsnMedcareWelfac'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
-            response = requests.get(url)
+            response = requests.get(url,params=params)
             
             root = ET.fromstring(response.text)
             
@@ -101,7 +103,7 @@ class MainGUI:
             # 일자리지원기관 검색
             url = f'https://openapi.gg.go.kr/OldpsnJobSportInst'
             params ={'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
-            response = requests.get(url)
+            response = requests.get(url,params=params)
             
             root = ET.fromstring(response.text)
             
@@ -117,7 +119,7 @@ class MainGUI:
             # 주거복지시설 검색
             url = f'https://openapi.gg.go.kr/OldpsnHousngWelfaclt'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
-            response = requests.get(url)
+            response = requests.get(url,params=params)
             
             root = ET.fromstring(response.text)
             
