@@ -34,24 +34,7 @@ class MainGUI:
             url = f'https://openapi.gg.go.kr/OldPersonSpecialityHospital'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url, params=params)
-            #data = json.loads(response.text)
-
-            # # 검색 결과를 self.search_results에 저장
-            # self.search_results = []
-            # if 'row' in data:
-            #     self.search_results = [
-            #         f"{item['HOSPTL_NM']}, {item['TREAT_SBJECT_CNT']}"
-            #         for item in data['row']
-            #     ]
-            # else:
-            #     self.search_results = ['검색 결과가 없습니다.']
-
-            # # 검색 결과를 리스트 박스에 추가
-            # result_list = Listbox(self.framelist[tab_index], width=60, height=20)
-            # result_list.place(x=0, y=200)
-
-            # for result in self.search_results:
-            #     result_list.insert(END, result)
+            
             root = ET.fromstring(response.text)
             
             for item in root.iter('row'):
@@ -70,7 +53,6 @@ class MainGUI:
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url,params=params)
             
-            print(response.text)
             
             root = ET.fromstring(response.text)
             
