@@ -10,6 +10,7 @@ class MainGUI:
         search_query = self.entrylist[tab_index].get()
         self.search_results = []  # 검색 결과 초기화
         root = NONE
+        self.lboxlist[tab_index].delete(0,END)
 
         if tab_index == 0:
             # 요양시설 검색
