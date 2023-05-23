@@ -2,7 +2,6 @@ from tkinter import *
 import requests
 import tkinter.ttk
 import xml.etree.ElementTree as ET
-import json
 
 key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
 
