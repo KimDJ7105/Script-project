@@ -10,9 +10,12 @@ class MainGUI:
         search_query = self.entrylist[tab_index].get()
         self.search_results = []  # 검색 결과 초기화
         root = NONE
-        #print(self.lboxlist[tab_index][self.lboxlist[tab_index].curselection()[0]])
+        
+        
+        
+        print()
         #self.lboxlist[tab_index].delete(0,END)
-
+    
         if tab_index == 0:
             # 요양시설 검색
             url = f'https://openapi.gg.go.kr/OldPersonRecuperationFacility'
@@ -114,6 +117,13 @@ class MainGUI:
                 
                 self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 총 세대수 / 입소현원 : " + qual + " / " + c_capa)
 
+    def on_select(self,tab_index) : #리스트 박스에서 항목 선택시 실행될 함수
+        cur = self.lboxlist[tab_index].curselection()
+        
+        if cur :
+            item = self.lboxlist[tab_index].get(cur)
+            print(item)
+
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
@@ -156,7 +166,15 @@ class MainGUI:
             
             self.labellist.append(Label(self.framelist[i],bg='white',width=60,height=25))
             self.labellist[i].place(x=5,y=250)
-
+        
+        self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
+        self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
+        self.lboxlist[2].bind("<<ListboxSelect>>", lambda event : self.on_select(2))
+        self.lboxlist[3].bind("<<ListboxSelect>>", lambda event : self.on_select(3))
+        self.lboxlist[4].bind("<<ListboxSelect>>", lambda event : self.on_select(4))
+        self.lboxlist[5].bind("<<ListboxSelect>>", lambda event : self.on_select(5))
+        self.lboxlist[6].bind("<<ListboxSelect>>", lambda event : self.on_select(6))
+        
         window.mainloop()
 
 
