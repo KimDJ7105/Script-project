@@ -53,8 +53,8 @@ class MainGUI:
             avg_capa = 0
             avg_qual = 0
             count = 0
-            max_capa = 0
-            max_qual = 0
+            self.max_capa = 0
+            self.max_qual = 0
             
             for item in root.iter('row'):
                 name = item.findtext('HOSPTL_NM') #병원명
@@ -66,11 +66,11 @@ class MainGUI:
                 avg_qual += int(qual)
                 count += 1
                 
-                if int(capa) > max_capa :
-                    max_capa = int(capa)
+                if int(capa) > self.max_capa :
+                    self.max_capa = int(capa)
                 
-                if int(qual) > max_qual :
-                    max_qual = int(qual)
+                if int(qual) > self.max_qual :
+                    self.max_qual = int(qual)
                 
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
                 #위치 정보도 있음, 홈페이지 주소도.
@@ -78,8 +78,8 @@ class MainGUI:
             
             barWidth = (cvwidth - 10) / 4 - 10
             
-            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth, cvheight - (avg_capa // count / max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 10,tags='avg',fill='red')
-            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth, cvheight - (avg_qual // count / max_qual) * cvheight - 10, 10 + 3*barWidth,cvheight - 10,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth, cvheight - (avg_capa // count / self.max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 10,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 3*barWidth,cvheight - 10,tags='avg',fill='red')
         
         elif tab_index == 2:
             # 여가복지시설 검색
@@ -148,10 +148,20 @@ class MainGUI:
     def on_select(self,tab_index) : #리스트 박스에서 항목 선택시 실행될 함수
         cur = self.lboxlist[tab_index].curselection()
         
-        if cur :
-            item = self.lboxlist[tab_index].get(cur)
-            #self.canvlist[tab_index].configure(text=item)
-
+        if not cur :
+            return
+        
+        item = self.lboxlist[tab_index].get(cur)
+        if tab_index == 1 :
+            self.canvlist[tab_index].delete('data')
+            capa = int(item.split("병상 수 : ")[1].split(" ")[0])
+            qual = int(item.split("진료 과목 내용 : (")[1].split("개)")[0])
+            
+            barWidth = (cvwidth - 10) / 4 - 10
+            
+            self.canvlist[tab_index].create_rectangle(10 + 1*barWidth, cvheight - (capa / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 10,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(10 + 3*barWidth, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 10,tags='data',fill='blue')
+        
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
