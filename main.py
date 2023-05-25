@@ -8,6 +8,9 @@ import xml.etree.ElementTree as ET
 key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
 hospital_center = gmaps.geocode('')
 
+cvwidth = 425
+cvheight = 300
+
 class MainGUI:
     #folium 지도
     #def MapUI(self, tab_index):
@@ -21,7 +24,6 @@ class MainGUI:
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
         root = NONE
         
-        self.avglist[tab_index].clear()
         self.canvlist[tab_index].delete('all')
         
         if tab_index == 0:
@@ -66,15 +68,16 @@ class MainGUI:
                 #위치 정보도 있음, 홈페이지 주소도.
                 self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
             
-            self.avglist[tab_index].append((avg_capa // count))
-            self.avglist[tab_index].append((avg_qual // count))
+            barWidth = (cvwidth - 10) / 4 - 10
+            
+            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth, (avg_capa // count), 10 + 1*barWidth,cvheight - 10,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth, (avg_qual // count), 10 + 3*barWidth,cvheight - 10,tags='avg',fill='red')
         
         elif tab_index == 2:
             # 여가복지시설 검색
             url = f'https://openapi.gg.go.kr/SenircentFaclt'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
             response = requests.get(url,params=params)
-            
             
             root = ET.fromstring(response.text)
             
@@ -146,8 +149,6 @@ class MainGUI:
         window.title("노인통합 서비스")
         window.geometry("800x600")
 
-        self.avglist = [[] for _ in range(6)]
-        
         nb = tkinter.ttk.Notebook(window, width=800, height=600)
         nb.pack()
 
@@ -185,7 +186,7 @@ class MainGUI:
             self.lboxlist.append(Listbox(self.framelist[i],width=60,height=10))
             self.lboxlist[i].place(x=5,y=80)
             
-            self.canvlist.append(Canvas(self.framelist[i],bg='white',width=60,height=25))
+            self.canvlist.append(Canvas(self.framelist[i],bg='white',width=cvwidth,height=cvheight))
             self.canvlist[i].place(x=5,y=250)
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
