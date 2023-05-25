@@ -53,6 +53,8 @@ class MainGUI:
             avg_capa = 0
             avg_qual = 0
             count = 0
+            max_capa = 0
+            max_qual = 0
             
             for item in root.iter('row'):
                 name = item.findtext('HOSPTL_NM') #병원명
@@ -64,14 +66,20 @@ class MainGUI:
                 avg_qual += int(qual)
                 count += 1
                 
+                if int(capa) > max_capa :
+                    max_capa = int(capa)
+                
+                if int(qual) > max_qual :
+                    max_qual = int(qual)
+                
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
                 #위치 정보도 있음, 홈페이지 주소도.
                 self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
             
             barWidth = (cvwidth - 10) / 4 - 10
             
-            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth, (avg_capa // count), 10 + 1*barWidth,cvheight - 10,tags='avg',fill='red')
-            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth, (avg_qual // count), 10 + 3*barWidth,cvheight - 10,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth, cvheight - (avg_capa // count / max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 10,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth, cvheight - (avg_qual // count / max_qual) * cvheight - 10, 10 + 3*barWidth,cvheight - 10,tags='avg',fill='red')
         
         elif tab_index == 2:
             # 여가복지시설 검색
