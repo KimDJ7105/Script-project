@@ -6,14 +6,15 @@ import tkinter.ttk
 import xml.etree.ElementTree as ET
 
 key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
+hospital_center = gmaps.geocode('')
 
 class MainGUI:
     #folium 지도
-    def MapUI(self, tab_index):
-        map_osm = folium.Map(location=[37.3402849,126.7313189], zoom_start =13)
-        folium.Marker([37.3402849,126.7313189],popup='위치').add_to(map_osm)
-        map_osm.save('osm.html')
-        webbrowser.open_new('osm.html')
+    #def MapUI(self, tab_index):
+        #map_osm = folium.Map(location=[37.3402849,126.7313189], zoom_start =13)
+        #folium.Marker([37.3402849,126.7313189],popup='위치').add_to(map_osm)
+        #map_osm.save('osm.html')
+        #webbrowser.open_new('osm.html')
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -157,8 +158,7 @@ class MainGUI:
         Button(self.framelist[0], text='검색', command=lambda: self.search(0)).place(x=150, y=10)
         Button(self.framelist[1], text='검색', command=lambda: self.search(1)).place(x=150, y=10)
         #folium 지도 전분병원 검색 하는중
-        Button(self.framelist[1], text='지도', command=lambda: self.MapUI(1)).place(x=190, y=10)
-
+        #Button(self.framelist[1], text='지도', command=lambda: self.MapUI(1)).place(x=190, y=10)
         Button(self.framelist[2], text='검색', command=lambda: self.search(2)).place(x=150, y=10)
         Button(self.framelist[3], text='검색', command=lambda: self.search(3)).place(x=150, y=10)
         Button(self.framelist[4], text='검색', command=lambda: self.search(4)).place(x=150, y=10)
