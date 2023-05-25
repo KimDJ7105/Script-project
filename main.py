@@ -20,7 +20,9 @@ class MainGUI:
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
         root = NONE
         
-    
+        self.avglist[tab_index].clear()
+        self.canvlist[tab_index].delete('all')
+        
         if tab_index == 0:
             # 요양시설 검색
             url = f'https://openapi.gg.go.kr/OldPersonRecuperationFacility'
@@ -31,13 +33,11 @@ class MainGUI:
             
             for item in root.iter('row'):
                 name = item.findtext('BIZPLC_NM') #시설명
-                capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
-                qual = item.findtext('QUALFCTN_POSESN_PSN_CNT') #자격증 소유 인원
-                area = item.findtext('LOCPLC_AR') #면적
+                lat = item.findtext('REFINE_WGS84_LAT') #위도
+                logt = item.findtext('REFINE_WGS84_LOGT') #경도
                 
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + "입소 정원 : " + capa + "자격소유인원 : " + qual + "면적 : " + area)
-
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 위도 : ' + lat + ' 경도 : ' + logt)
 
         elif tab_index == 1:
             # 전문병원 검색
@@ -47,15 +47,26 @@ class MainGUI:
             
             root = ET.fromstring(response.text)
             
+            avg_capa = 0
+            avg_qual = 0
+            count = 0
+            
             for item in root.iter('row'):
                 name = item.findtext('HOSPTL_NM') #병원명
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
                 area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
                 
+                avg_capa += int(capa)
+                avg_qual += int(qual)
+                count += 1
+                
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
                 #위치 정보도 있음, 홈페이지 주소도.
-                self.lboxlist[tab_index].insert(END,"병원명 : " + name + "병상 수 : " + capa  + "진료 과목 내용 : (" + qual + "개), " + area)
+                self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
+            
+            self.avglist[tab_index].append((avg_capa // count))
+            self.avglist[tab_index].append((avg_qual // count))
         
         elif tab_index == 2:
             # 여가복지시설 검색
@@ -127,13 +138,15 @@ class MainGUI:
         
         if cur :
             item = self.lboxlist[tab_index].get(cur)
-            print(item)
+            #self.canvlist[tab_index].configure(text=item)
 
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
         window.geometry("800x600")
 
+        self.avglist = [[] for _ in range(6)]
+        
         nb = tkinter.ttk.Notebook(window, width=800, height=600)
         nb.pack()
 
@@ -163,7 +176,7 @@ class MainGUI:
         
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
-        self.labellist = [] #라벨이 담길 리스트
+        self.canvlist = [] #켄버스가 담길 리스트
 
         for i in range(7):
             self.entrylist.append(Entry(self.framelist[i], width=19))
@@ -172,8 +185,8 @@ class MainGUI:
             self.lboxlist.append(Listbox(self.framelist[i],width=60,height=10))
             self.lboxlist[i].place(x=5,y=80)
             
-            self.labellist.append(Label(self.framelist[i],bg='white',width=60,height=25))
-            self.labellist[i].place(x=5,y=250)
+            self.canvlist.append(Canvas(self.framelist[i],bg='white',width=60,height=25))
+            self.canvlist[i].place(x=5,y=250)
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
