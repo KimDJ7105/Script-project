@@ -18,6 +18,44 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
+    def Map(self):
+        # 병원 정보 요청 주소, 요청인자 설정
+        url = f'https://openapi.gg.go.kr/OldPersonSpecialityHospital'
+        params = {
+            'Key': key,
+            'Type': "xml",
+            'pIndex': 1,
+            'pSize': 100,
+        }
+
+        # 병원 위치 정보 가져오기
+        response = requests.get(url, params=params)
+        root = ET.fromstring(response.content)
+        items = root.findall(".//row")
+
+        hospitals = []
+        for item in items:
+            hospital = {
+                "name": item.findtext("HOSP_NM"),  # 병원 이름
+                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 병원 주소
+            }
+            hospitals.append(hospital)
+
+        # 주소를 기반으로 지도 생성 및 표시
+        for i, hospital in enumerate(hospitals):
+            address = hospital['address']
+            geocode_result = gmaps.geocode(address)
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                self.mapcanv[i].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[i].image = img  # 저장하여 참조 유지
+
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
@@ -44,7 +82,7 @@ class MainGUI:
         elif tab_index == 1:
             # 전문병원 검색
             url = f'https://openapi.gg.go.kr/OldPersonSpecialityHospital'
-            params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
+            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 100, 'SIGUN_NM': search_query}
             response = requests.get(url, params=params)
             
             root = ET.fromstring(response.text)
@@ -83,7 +121,7 @@ class MainGUI:
         elif tab_index == 2:
             # 여가복지시설 검색
             url = f'https://openapi.gg.go.kr/SenircentFaclt'
-            params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
+            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 100, 'SIGUN_NM': search_query}
             response = requests.get(url,params=params)
             
             root = ET.fromstring(response.text)
@@ -208,9 +246,9 @@ class MainGUI:
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
             self.mapcanv[i].place(x=435, y=250)
 
+        #구글 지도
+        self.Map()
 
-
-        
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
         self.lboxlist[2].bind("<<ListboxSelect>>", lambda event : self.on_select(2))
