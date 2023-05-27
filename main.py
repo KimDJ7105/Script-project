@@ -19,13 +19,13 @@ mapcvheight = 300
 
 class MainGUI:
     def Map(self):
-        # 병원 정보 요청 주소, 요청인자 설정
-        url = f'https://openapi.gg.go.kr/OldPersonSpecialityHospital'
+        # 병원 정보 요청 주소 및 요청인자 설정
+        url = "https://openapi.gg.go.kr/OldPersonSpecialityHospital"
         params = {
-            'Key': key,
-            'Type': "xml",
-            'pIndex': 1,
-            'pSize': 100,
+            "Key": key,
+            "Type": "xml",
+            "pIndex": "1",
+            "pSize": "100",
         }
 
         # 병원 위치 정보 가져오기
@@ -198,7 +198,7 @@ class MainGUI:
             
             self.canvlist[tab_index].create_rectangle(10 + 1*barWidth, cvheight - (capa / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 10,tags='data',fill='blue')
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 10,tags='data',fill='blue')
-        
+
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
