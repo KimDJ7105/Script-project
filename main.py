@@ -1,24 +1,19 @@
 from tkinter import *
-import folium
-import webbrowser
+from PIL import Image, ImageTk
+import io
 import requests
 import tkinter.ttk
 import xml.etree.ElementTree as ET
 
 key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
-hospital_center = gmaps.geocode('')
+#google_key = ''
 
 cvwidth = 425
 cvheight = 300
+mapcvwidth = 350
+mapcvheight = 300
 
 class MainGUI:
-    #folium 지도
-    #def MapUI(self, tab_index):
-        #map_osm = folium.Map(location=[37.3402849,126.7313189], zoom_start =13)
-        #folium.Marker([37.3402849,126.7313189],popup='위치').add_to(map_osm)
-        #map_osm.save('osm.html')
-        #webbrowser.open_new('osm.html')
-
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
@@ -185,8 +180,6 @@ class MainGUI:
 
         Button(self.framelist[0], text='검색', command=lambda: self.search(0)).place(x=150, y=10)
         Button(self.framelist[1], text='검색', command=lambda: self.search(1)).place(x=150, y=10)
-        #folium 지도 전분병원 검색 하는중
-        #Button(self.framelist[1], text='지도', command=lambda: self.MapUI(1)).place(x=190, y=10)
         Button(self.framelist[2], text='검색', command=lambda: self.search(2)).place(x=150, y=10)
         Button(self.framelist[3], text='검색', command=lambda: self.search(3)).place(x=150, y=10)
         Button(self.framelist[4], text='검색', command=lambda: self.search(4)).place(x=150, y=10)
@@ -196,6 +189,7 @@ class MainGUI:
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
         self.canvlist = [] #켄버스가 담길 리스트
+        self.mapcanv = [] #구글지도 캔버스
 
         for i in range(7):
             self.entrylist.append(Entry(self.framelist[i], width=19))
@@ -206,6 +200,12 @@ class MainGUI:
             
             self.canvlist.append(Canvas(self.framelist[i],bg='white',width=cvwidth,height=cvheight))
             self.canvlist[i].place(x=5,y=250)
+
+            self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
+            self.mapcanv[i].place(x=435, y=250)
+
+
+
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
@@ -214,7 +214,6 @@ class MainGUI:
         self.lboxlist[4].bind("<<ListboxSelect>>", lambda event : self.on_select(4))
         self.lboxlist[5].bind("<<ListboxSelect>>", lambda event : self.on_select(5))
         self.lboxlist[6].bind("<<ListboxSelect>>", lambda event : self.on_select(6))
-        
         window.mainloop()
 
 
