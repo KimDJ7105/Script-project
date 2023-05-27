@@ -41,7 +41,9 @@ class MainGUI:
             }
             hospitals.append(hospital)
 
-        # 주소를 기반으로 지도 생성 및 표시
+        self.img_list = [] #이미지 객체를 저장할 리스트
+
+        # 주소를 기반으로 지도 생성 및 저장
         for i, hospital in enumerate(hospitals):
             address = hospital['address']
             geocode_result = gmaps.geocode(address)
@@ -53,8 +55,7 @@ class MainGUI:
                 # 구글 지도 표시
                 img_data = requests.get(map_url).content
                 img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.mapcanv[i].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[i].image = img  # 저장하여 참조 유지
+                self.img_list.append(img) #이미지 객체를 리스트에 저장
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -198,6 +199,11 @@ class MainGUI:
             
             self.canvlist[tab_index].create_rectangle(10 + 1*barWidth, cvheight - (capa / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 10,tags='data',fill='blue')
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 10,tags='data',fill='blue')
+
+            # 선택된 항목에 해당하는 이미지 출력
+            img = self.img_list[cur[0]]
+            self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
+            self.mapcanv[1].image = img  # 저장하여 참조 유지
 
     def __init__(self):
         window = Tk()
