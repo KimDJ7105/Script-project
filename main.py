@@ -18,14 +18,53 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
-    def Map(self):
+    def idx0_Map(self):
+        # 병원 정보 요청 주소 및 요청인자 설정
+        url = "https://openapi.gg.go.kr/OldPersonRecuperationFacility"
+        params = {
+            "Key": key,
+            "Type": "xml",
+            "pIndex": 1,
+            "pSize": 100,
+        }
+
+        # 병원 위치 정보 가져오기
+        response = requests.get(url, params=params)
+        root = ET.fromstring(response.content)
+        items = root.findall(".//row")
+
+        hospitals = []
+        for item in items:
+            hospital = {
+                "name": item.findtext("BIZPLC_NM"),  # 시설 이름
+                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
+            }
+            hospitals.append(hospital)
+
+        self.img_list0 = [] #이미지 객체를 저장할 리스트
+
+        # 주소를 기반으로 지도 생성 및 저장
+        for i, hospital in enumerate(hospitals):
+            address = hospital['address']
+            geocode_result = gmaps.geocode(address)
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                self.img_list0.append(img) #이미지 객체를 리스트에 저장
+
+    def idx1_Map(self):
         # 병원 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldPersonSpecialityHospital"
         params = {
             "Key": key,
             "Type": "xml",
-            "pIndex": "1",
-            "pSize": "100",
+            "pIndex": 1,
+            "pSize": 100,
         }
 
         # 병원 위치 정보 가져오기
@@ -41,7 +80,7 @@ class MainGUI:
             }
             hospitals.append(hospital)
 
-        self.img_list = [] #이미지 객체를 저장할 리스트
+        self.img_list1 = [] #이미지 객체를 저장할 리스트
 
         # 주소를 기반으로 지도 생성 및 저장
         for i, hospital in enumerate(hospitals):
@@ -55,7 +94,7 @@ class MainGUI:
                 # 구글 지도 표시
                 img_data = requests.get(map_url).content
                 img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list.append(img) #이미지 객체를 리스트에 저장
+                self.img_list1.append(img) #이미지 객체를 리스트에 저장
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -190,7 +229,14 @@ class MainGUI:
             return
         
         item = self.lboxlist[tab_index].get(cur)
-        if tab_index == 1 :
+
+        if tab_index == 0:
+            # 선택된 항목에 해당하는 이미지 출력
+            img = self.img_list0[cur[0]]
+            self.mapcanv[0].create_image(0, 0, anchor="nw", image=img)
+            self.mapcanv[0].image = img  # 저장하여 참조 유지
+
+        elif tab_index == 1:
             self.canvlist[tab_index].delete('data')
             capa = int(item.split("병상 수 : ")[1].split(" ")[0])
             qual = int(item.split("진료 과목 내용 : (")[1].split("개)")[0])
@@ -201,7 +247,7 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 10,tags='data',fill='blue')
 
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
+            img = self.img_list1[cur[0]]
             self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[1].image = img  # 저장하여 참조 유지
 
@@ -253,7 +299,8 @@ class MainGUI:
             self.mapcanv[i].place(x=435, y=250)
 
         #구글 지도
-        self.Map()
+        self.idx0_Map()
+        self.idx1_Map()
 
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
