@@ -1,5 +1,5 @@
 from tkinter import *
-
+#import tkinter as tk
 import googlemaps
 from PIL import Image, ImageTk
 import io
@@ -19,7 +19,7 @@ mapcvheight = 300
 
 class MainGUI:
     def idx0_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldPersonRecuperationFacility"
         params = {
             "Key": key,
@@ -28,7 +28,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -58,7 +58,7 @@ class MainGUI:
                 self.img_list0.append(img) #이미지 객체를 리스트에 저장
 
     def idx1_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldPersonSpecialityHospital"
         params = {
             "Key": key,
@@ -67,7 +67,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -97,7 +97,7 @@ class MainGUI:
                 self.img_list1.append(img) #이미지 객체를 리스트에 저장
 
     def idx2_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/SenircentFaclt"
         params = {
             "Key": key,
@@ -106,7 +106,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -136,7 +136,7 @@ class MainGUI:
                 self.img_list2.append(img)  # 이미지 객체를 리스트에 저장
 
     def idx3_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldpsnMedcareWelfac"
         params = {
             "Key": key,
@@ -145,7 +145,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -175,7 +175,7 @@ class MainGUI:
                 self.img_list3.append(img) #이미지 객체를 리스트에 저장
 
     def idx4_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldpsnJobSportInst"
         params = {
             "Key": key,
@@ -184,7 +184,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -214,7 +214,7 @@ class MainGUI:
                 self.img_list4.append(img) #이미지 객체를 리스트에 저장
 
     def idx5_Map(self):
-        # 병원 정보 요청 주소 및 요청인자 설정
+        # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldpsnHousngWelfaclt"
         params = {
             "Key": key,
@@ -223,7 +223,7 @@ class MainGUI:
             "pSize": 100,
         }
 
-        # 병원 위치 정보 가져오기
+        # 위치 정보 가져오기
         response = requests.get(url, params=params)
         root = ET.fromstring(response.content)
         items = root.findall(".//row")
@@ -468,17 +468,22 @@ class MainGUI:
         for i in range(7):
             self.entrylist.append(Entry(self.framelist[i], width=19))
             self.entrylist[i].place(x=10, y=10)
-            
-            self.lboxlist.append(Listbox(self.framelist[i],width=60,height=10))
-            self.lboxlist[i].place(x=5,y=80)
-            
-            self.canvlist.append(Canvas(self.framelist[i],bg='white',width=cvwidth,height=cvheight))
-            self.canvlist[i].place(x=5,y=250)
+
+            self.lboxlist.append(Listbox(self.framelist[i], width=60, height=10))
+            self.lboxlist[i].place(x=5, y=80)
+            # 리스트박스 스크롤바
+            scrollbar = Scrollbar(self.framelist[i])
+            self.lboxlist[i].config(yscrollcommand=scrollbar.set)
+            scrollbar.config(command=self.lboxlist[i].yview)
+            scrollbar.place(x=420, y=60, height=150)
+
+            self.canvlist.append(Canvas(self.framelist[i], bg='white', width=cvwidth, height=cvheight))
+            self.canvlist[i].place(x=5, y=250)
 
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
             self.mapcanv[i].place(x=435, y=250)
 
-        #구글 지도
+            #구글 지도
         self.idx0_Map()
         self.idx1_Map()
         #self.idx2_Map() 공공api에서 주는 주소가 올바르지 않아서 지도생성이 안됌.
