@@ -475,7 +475,7 @@ class MainGUI:
             scrollbar = Scrollbar(self.framelist[i])
             self.lboxlist[i].config(yscrollcommand=scrollbar.set)
             scrollbar.config(command=self.lboxlist[i].yview)
-            scrollbar.place(x=420, y=60, height=150)
+            scrollbar.place(x=420, y=70, height=180)
 
             self.canvlist.append(Canvas(self.framelist[i], bg='white', width=cvwidth, height=cvheight))
             self.canvlist[i].place(x=5, y=250)
@@ -486,10 +486,10 @@ class MainGUI:
             #구글 지도
         self.idx0_Map()
         self.idx1_Map()
-        #self.idx2_Map() 공공api에서 주는 주소가 올바르지 않아서 지도생성이 안됌.
+        #self.idx2_Map() 공공api 주소 문제?, 일시적인 오류?
         self.idx3_Map()
         self.idx4_Map()
-        #self.idx5_Map() 공공api에서 주는 주소가 올바르지 않아서 지도생성이 안됌.
+        #self.idx5_Map() 공공api 주소 문제?, 일시적인 오류?
 
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
