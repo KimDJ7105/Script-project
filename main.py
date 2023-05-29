@@ -402,6 +402,7 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 1*barWidth, cvheight - (capa / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 10,tags='data',fill='blue')
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 10,tags='data',fill='blue')
 
+            #검색을 다시 했을때 img_list를 초기화 하고 다시 채워야함
             # 선택된 항목에 해당하는 이미지 출력
             img = self.img_list1[cur[0]]
             self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
