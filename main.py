@@ -18,45 +18,6 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
-    def idx0_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/OldPersonRecuperationFacility"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("BIZPLC_NM"),  # 시설 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list0 = [] #이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list0.append(img) #이미지 객체를 리스트에 저장
-
     def idx1_Map(self):
         # 정보 요청 주소 및 요청인자 설정
         url = "https://openapi.gg.go.kr/OldPersonSpecialityHospital"
@@ -257,6 +218,7 @@ class MainGUI:
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
         root = NONE
         
+        self.img_list.clear()
         self.canvlist[tab_index].delete('all')
         
         if tab_index == 0:
@@ -266,14 +228,25 @@ class MainGUI:
             response = requests.get(url, params=params)
             
             root = ET.fromstring(response.text)
-            
+            ad_list = []
             for item in root.iter('row'):
                 name = item.findtext('BIZPLC_NM') #시설명
-                lat = item.findtext('REFINE_WGS84_LAT') #위도
-                logt = item.findtext('REFINE_WGS84_LOGT') #경도
+                address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
+                ad_list.append(address)
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 위도 : ' + lat + ' 경도 : ' + logt)
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 주소 : ' + address)
+            
+            for address in ad_list:
+                geocode_result = gmaps.geocode(address)
+                if geocode_result:
+                    location = geocode_result[0]['geometry']['location']
+                    lat, lng = location['lat'], location['lng']
+                    map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                    # 구글 지도 표시
+                    img_data = requests.get(map_url).content
+                    img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                    self.img_list.append(img) #이미지 객체를 리스트에 저장
 
         elif tab_index == 1:
             # 전문병원 검색
@@ -288,12 +261,14 @@ class MainGUI:
             count = 0
             self.max_capa = 0
             self.max_qual = 0
+            ad_list = []
             
             for item in root.iter('row'):
                 name = item.findtext('HOSPTL_NM') #병원명
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
                 area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
+                ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 avg_capa += int(capa)
                 avg_qual += int(qual)
@@ -315,6 +290,17 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 2*barWidth + 5, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
             self.canvlist[tab_index].create_text(10 + 0*barWidth + (barWidth / 2),cvheight - 10,text="평균 병상 수")
             self.canvlist[tab_index].create_text(10 + 2*barWidth + (barWidth / 2),cvheight - 10,text="평균 진료과목 수")
+            
+            for address in ad_list:
+                geocode_result = gmaps.geocode(address)
+                if geocode_result:
+                    location = geocode_result[0]['geometry']['location']
+                    lat, lng = location['lat'], location['lng']
+                    map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                    # 구글 지도 표시
+                    img_data = requests.get(map_url).content
+                    img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                    self.img_list.append(img) #이미지 객체를 리스트에 저장
 
         elif tab_index == 2:
             # 여가복지시설 검색
@@ -390,7 +376,7 @@ class MainGUI:
 
         if tab_index == 0:
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list0[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[0].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[0].image = img  # 저장하여 참조 유지
 
@@ -407,31 +393,31 @@ class MainGUI:
             self.canvlist[tab_index].create_text(12 + 3*barWidth + (barWidth / 2),cvheight - 10,text="진료과목 수",tags='data')
             
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list1[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[1].image = img  # 저장하여 참조 유지
 
         elif tab_index == 2:
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list2[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[2].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[2].image = img  # 저장하여 참조 유지
 
         elif tab_index == 3:
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list3[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[3].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[3].image = img  # 저장하여 참조 유지
 
         elif tab_index == 4:
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list4[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[4].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[4].image = img  # 저장하여 참조 유지
 
         elif tab_index == 5:
             # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list5[cur[0]]
+            img = self.img_list[cur[0]]
             self.mapcanv[5].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[5].image = img  # 저장하여 참조 유지
 
@@ -495,6 +481,9 @@ class MainGUI:
         #self.idx4_Map()
         #self.idx5_Map() 공공api 주소 문제?, 일시적인 오류?
 
+        self.img_list = []
+        self.ad_list = []
+        
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
         self.lboxlist[2].bind("<<ListboxSelect>>", lambda event : self.on_select(2))
