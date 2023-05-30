@@ -38,20 +38,9 @@ class MainGUI:
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
-                ad_list.append(address)
+                self.ad_list.append(address)
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
                 self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 주소 : ' + address)
-            
-            for address in ad_list:
-                geocode_result = gmaps.geocode(address)
-                if geocode_result:
-                    location = geocode_result[0]['geometry']['location']
-                    lat, lng = location['lat'], location['lng']
-                    map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                    # 구글 지도 표시
-                    img_data = requests.get(map_url).content
-                    img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                    self.img_list.append(img) #이미지 객체를 리스트에 저장
 
         elif tab_index == 1:
             # 전문병원 검색
@@ -180,10 +169,17 @@ class MainGUI:
         item = self.lboxlist[tab_index].get(cur)
 
         if tab_index == 0:
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[0].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[0].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[0].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[0].image = img  # 저장하여 참조 유지
 
         elif tab_index == 1:
             self.canvlist[tab_index].delete('data')
