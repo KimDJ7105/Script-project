@@ -55,14 +55,13 @@ class MainGUI:
             count = 0
             self.max_capa = 0
             self.max_qual = 0
-            ad_list = []
             
             for item in root.iter('row'):
                 name = item.findtext('HOSPTL_NM') #병원명
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
                 area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
-                ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 avg_capa += int(capa)
                 avg_qual += int(qual)
@@ -84,17 +83,6 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 2*barWidth + 5, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
             self.canvlist[tab_index].create_text(10 + 0*barWidth + (barWidth / 2),cvheight - 10,text="평균 병상 수")
             self.canvlist[tab_index].create_text(10 + 2*barWidth + (barWidth / 2),cvheight - 10,text="평균 진료과목 수")
-            
-            for address in ad_list:
-                geocode_result = gmaps.geocode(address)
-                if geocode_result:
-                    location = geocode_result[0]['geometry']['location']
-                    lat, lng = location['lat'], location['lng']
-                    map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                    # 구글 지도 표시
-                    img_data = requests.get(map_url).content
-                    img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                    self.img_list.append(img) #이미지 객체를 리스트에 저장
 
         elif tab_index == 2:
             # 여가복지시설 검색
@@ -109,6 +97,7 @@ class MainGUI:
                 capa = item.findtext('USE_MBER_CNT') #이용중인 회원 수
                 num = item.findtext('DETAIL_TELNO') #전화번호
                 depart = item.findtext('JURISD_CHARGE_DEPT_NM') #관할 담당 부서
+                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 전화번호 : " + num + " 회원 수 : " + capa + " 관할 부서 : " + depart)
 
@@ -193,16 +182,30 @@ class MainGUI:
             self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="병상 수",tags='data')
             self.canvlist[tab_index].create_text(12 + 3*barWidth + (barWidth / 2),cvheight - 10,text="진료과목 수",tags='data')
             
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[1].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[1].image = img  # 저장하여 참조 유지
 
         elif tab_index == 2:
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[2].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[2].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[2].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[2].image = img  # 저장하여 참조 유지
 
         elif tab_index == 3:
             # 선택된 항목에 해당하는 이미지 출력
