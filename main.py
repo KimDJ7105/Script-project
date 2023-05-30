@@ -35,6 +35,9 @@ class MainGUI:
             root = ET.fromstring(response.text)
             ad_list = []
             for item in root.iter('row'):
+                if item.findtext('BSN_STATE_NM') == '폐업' :
+                    continue
+                
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
