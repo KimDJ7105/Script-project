@@ -161,17 +161,7 @@ class MainGUI:
         item = self.lboxlist[tab_index].get(cur)
 
         if tab_index == 0:
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[0].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[0].image = img  # 저장하여 참조 유지
+            pass
 
         elif tab_index == 1:
             self.canvlist[tab_index].delete('data')
@@ -184,70 +174,31 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth + 5, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
             self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="병상 수",tags='data')
             self.canvlist[tab_index].create_text(12 + 3*barWidth + (barWidth / 2),cvheight - 10,text="진료과목 수",tags='data')
-            
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[1].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[1].image = img  # 저장하여 참조 유지
 
         elif tab_index == 2:
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[2].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[2].image = img  # 저장하여 참조 유지
+            pass
 
         elif tab_index == 3:
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[3].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[3].image = img  # 저장하여 참조 유지
+            pass
 
         elif tab_index == 4:
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[4].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[4].image = img  # 저장하여 참조 유지
+            pass
 
         elif tab_index == 5:
-            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                # 선택된 항목에 해당하는 이미지 출력
-                self.mapcanv[5].create_image(0, 0, anchor="nw", image=img)
-                self.mapcanv[5].image = img  # 저장하여 참조 유지
+            pass
+        
+        #선택된 시설의 구글맵 출력
+        geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+        if geocode_result:
+            location = geocode_result[0]['geometry']['location']
+            lat, lng = location['lat'], location['lng']
+            map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+            # 구글 지도 표시
+            img_data = requests.get(map_url).content
+            img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+            # 선택된 항목에 해당하는 이미지 출력
+            self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
+            self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
     def __init__(self):
         window = Tk()
