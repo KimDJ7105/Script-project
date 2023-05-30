@@ -488,11 +488,11 @@ class MainGUI:
             self.mapcanv[i].place(x=435, y=250)
 
             #구글 지도
-        self.idx0_Map()
-        self.idx1_Map()
+        #self.idx0_Map()
+        #self.idx1_Map()
         #self.idx2_Map() 공공api 주소 문제?, 일시적인 오류?
-        self.idx3_Map()
-        self.idx4_Map()
+        #self.idx3_Map()
+        #self.idx4_Map()
         #self.idx5_Map() 공공api 주소 문제?, 일시적인 오류?
 
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
