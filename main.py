@@ -18,207 +18,12 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
-    def idx1_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/OldPersonSpecialityHospital"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("HOSP_NM"),  # 병원 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 병원 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list1 = [] #이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list1.append(img) #이미지 객체를 리스트에 저장
-
-    def idx2_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/SenircentFaclt"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("FACLT_NM"),  # 시설 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list2 = []  # 이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list2.append(img)  # 이미지 객체를 리스트에 저장
-
-    def idx3_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/OldpsnMedcareWelfac"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("FACLT_NM"),  # 시설 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list3 = [] #이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list3.append(img) #이미지 객체를 리스트에 저장
-
-    def idx4_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/OldpsnJobSportInst"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("FACLT_NM"),  # 시설 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list4 = [] #이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list4.append(img) #이미지 객체를 리스트에 저장
-
-    def idx5_Map(self):
-        # 정보 요청 주소 및 요청인자 설정
-        url = "https://openapi.gg.go.kr/OldpsnHousngWelfaclt"
-        params = {
-            "Key": key,
-            "Type": "xml",
-            "pIndex": 1,
-            "pSize": 100,
-        }
-
-        # 위치 정보 가져오기
-        response = requests.get(url, params=params)
-        root = ET.fromstring(response.content)
-        items = root.findall(".//row")
-
-        hospitals = []
-        for item in items:
-            hospital = {
-                "name": item.findtext("FACLT_NM"),  # 시설 이름
-                "address": item.findtext("REFINE_ROADNM_ADDR"),  # 시설 주소
-            }
-            hospitals.append(hospital)
-
-        self.img_list5 = []  # 이미지 객체를 저장할 리스트
-
-        # 주소를 기반으로 지도 생성 및 저장
-        for i, hospital in enumerate(hospitals):
-            address = hospital['address']
-            geocode_result = gmaps.geocode(address)
-            if geocode_result:
-                location = geocode_result[0]['geometry']['location']
-                lat, lng = location['lat'], location['lng']
-                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
-
-                # 구글 지도 표시
-                img_data = requests.get(map_url).content
-                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-                self.img_list5.append(img)  # 이미지 객체를 리스트에 저장
-
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
         root = NONE
         
-        self.img_list.clear()
+        self.ad_list.clear()
         self.canvlist[tab_index].delete('all')
         
         if tab_index == 0:
@@ -473,15 +278,9 @@ class MainGUI:
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
             self.mapcanv[i].place(x=435, y=250)
 
-            #구글 지도
-        #self.idx0_Map()
-        #self.idx1_Map()
         #self.idx2_Map() 공공api 주소 문제?, 일시적인 오류?
-        #self.idx3_Map()
-        #self.idx4_Map()
         #self.idx5_Map() 공공api 주소 문제?, 일시적인 오류?
 
-        self.img_list = []
         self.ad_list = []
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
