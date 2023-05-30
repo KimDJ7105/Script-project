@@ -114,6 +114,7 @@ class MainGUI:
                 facl_type = item.findtext('FACLT_KIND_NM') #시설 종류
                 qual = item.findtext('LNGTR_RECPER_APPONT_INST_YN_NM') #장기요양지정 여부
                 capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
+                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 self.lboxlist[tab_index].insert(END,"시설 종류 : " + facl_type + " 시설명 : " + name + " 장기요양지정 여부 : " + qual + " 입소 정원 : " + capa)
 
@@ -130,6 +131,7 @@ class MainGUI:
                 qual = item.findtext('ENFLPSN_PSN_CAPA') #종사자정원
                 instl = item.findtext('PRVATE_INSTL_DIV_NM') #설치 주체
                 op = item.findtext('INSTL_MAINBD_DIV_NM') #운영 주체
+                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 종사자 정원 : " + qual + " 설치/운영 : " + instl + " / " + op)
 
@@ -146,6 +148,7 @@ class MainGUI:
                 lot_type = item.findtext('LOTOUT_TYPE') #분양유형
                 qual = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
                 c_capa = item.findtext('ENTRNC_PSTPSN_SUM') #입소현원
+                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 총 세대수 / 입소현원 : " + qual + " / " + c_capa)
 
@@ -208,22 +211,43 @@ class MainGUI:
                 self.mapcanv[2].image = img  # 저장하여 참조 유지
 
         elif tab_index == 3:
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[3].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[3].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[3].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[3].image = img  # 저장하여 참조 유지
 
         elif tab_index == 4:
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[4].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[4].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[4].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[4].image = img  # 저장하여 참조 유지
 
         elif tab_index == 5:
-            # 선택된 항목에 해당하는 이미지 출력
-            img = self.img_list[cur[0]]
-            self.mapcanv[5].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[5].image = img  # 저장하여 참조 유지
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[5].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[5].image = img  # 저장하여 참조 유지
 
     def __init__(self):
         window = Tk()
@@ -276,9 +300,6 @@ class MainGUI:
 
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
             self.mapcanv[i].place(x=435, y=250)
-
-        #self.idx2_Map() 공공api 주소 문제?, 일시적인 오류?
-        #self.idx5_Map() 공공api 주소 문제?, 일시적인 오류?
 
         self.ad_list = []
         
