@@ -112,14 +112,44 @@ class MainGUI:
             
             root = ET.fromstring(response.text)
             
+            self.index3_tuple_list.clear()
+            
+            avg_capa = 0
+            avg_size = 0
+            avg_qual = 0
+            count = 0
+            
+            self.max_capa = 0
+            self.max_qual = 0
+            self.max_size = 0
+            
             for item in root.iter('row'):
                 name = item.findtext('FACLT_NM') #시설명
                 facl_type = item.findtext('FACLT_KIND_NM') #시설 종류
                 qual = item.findtext('LNGTR_RECPER_APPONT_INST_YN_NM') #장기요양지정 여부
+                telnum = item.findtext('DETAIL_TELNO') #전화번호
+                if telnum == '' :
+                    telnum = '-'
                 capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
+                cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #입소 현원
+                cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사 현원
+                
+                avg_capa += int(capa)
+                if self.max_capa < int(capa) :
+                    self.max_capa = int(capa)
+                avg_size += int(capa) - int(cur_size)
+                if self.max_size < int(capa) - int(cur_size) :
+                    self.max_size = int(capa) - int(cur_size)
+                avg_qual += int(cur_qual)
+                if self.max_qual < int(cur_qual) :
+                    self.max_qual = int(cur_qual)
+                
+                count += 1
+                
+                self.index3_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
-                self.lboxlist[tab_index].insert(END,"시설 종류 : " + facl_type + " 시설명 : " + name + " 장기요양지정 여부 : " + qual + " 입소 정원 : " + capa)
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 장기요양지정 여부 : " + qual + " 전화번호 : " + telnum)
 
         elif tab_index == 4:
             # 일자리지원기관 검색
@@ -256,6 +286,7 @@ class MainGUI:
             self.mapcanv[i].place(x=435, y=250)
 
         self.ad_list = []
+        self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
@@ -264,6 +295,7 @@ class MainGUI:
         self.lboxlist[4].bind("<<ListboxSelect>>", lambda event : self.on_select(4))
         self.lboxlist[5].bind("<<ListboxSelect>>", lambda event : self.on_select(5))
         self.lboxlist[6].bind("<<ListboxSelect>>", lambda event : self.on_select(6))
+        
         window.mainloop()
 
 
