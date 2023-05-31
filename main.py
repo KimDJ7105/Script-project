@@ -125,7 +125,6 @@ class MainGUI:
             
             for item in root.iter('row'):
                 name = item.findtext('FACLT_NM') #시설명
-                facl_type = item.findtext('FACLT_KIND_NM') #시설 종류
                 qual = item.findtext('LNGTR_RECPER_APPONT_INST_YN_NM') #장기요양지정 여부
                 telnum = item.findtext('DETAIL_TELNO') #전화번호
                 if telnum == '' :
@@ -150,6 +149,21 @@ class MainGUI:
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
                 self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 장기요양지정 여부 : " + qual + " 전화번호 : " + telnum)
+            
+            barWidth = (cvwidth - 10) / 6 - 10
+            
+            self.canvlist[tab_index].create_rectangle(20 + 0*barWidth + 10, cvheight - (avg_capa // count / self.max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 2*barWidth + 10, cvheight - (avg_size // count / self.max_size) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 4*barWidth + 10, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 5*barWidth,cvheight - 20,tags='avg',fill='red')
+            
+            self.canvlist[tab_index].create_text(20 + 0*barWidth + (barWidth / 2),cvheight - 10,text="입소 정원")
+            self.canvlist[tab_index].create_text(20 + 2*barWidth + (barWidth / 2),cvheight - 10,text="공석")
+            self.canvlist[tab_index].create_text(20 + 4*barWidth + (barWidth / 2),cvheight - 10,text="종사원수")
+            
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 5 , cvwidth - 15 , cvheight // 2 + 20,tag='config',fill='red')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 27,text="평균")
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
         elif tab_index == 4:
             # 일자리지원기관 검색
@@ -212,7 +226,17 @@ class MainGUI:
             pass
 
         elif tab_index == 3:
-            pass
+            self.canvlist[tab_index].delete('data')
+            data = self.index3_tuple_list[cur[0]]
+            barWidth = (cvwidth - 10) / 6 - 10
+            
+            self.canvlist[tab_index].create_rectangle(20 + 1*barWidth + 10, cvheight - (data[0] / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(20 + 3*barWidth + 10, cvheight - ((data[0] - data[1]) / self.max_size) * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(20 + 5*barWidth + 10, cvheight - (data[2] / self.max_qual) * cvheight - 10, 10 + 6*barWidth,cvheight - 20,tags='data',fill='blue')
+            
+            self.canvlist[tab_index].create_text(20 + 1*barWidth + (barWidth / 2),cvheight - 10,text="입소 정원",tags='data')
+            self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="공석",tags='data')
+            self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
 
         elif tab_index == 4:
             pass
