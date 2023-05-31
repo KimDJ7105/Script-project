@@ -204,7 +204,7 @@ class MainGUI:
             barWidth = (cvwidth - 10) / 4 - 10
             
             self.canvlist[tab_index].create_rectangle(10 + 0*barWidth + 5, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
-            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth + 5, cvheight - (avg_area // count / self.max_area) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(10 + 2*barWidth + 5, cvheight - (avg_area // count / self.max_area)*10 * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
             
             self.canvlist[tab_index].create_text(10 + 0*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원")
             self.canvlist[tab_index].create_text(10 + 2*barWidth + (barWidth / 2),cvheight - 10,text="총 면적")
@@ -271,7 +271,15 @@ class MainGUI:
             self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
 
         elif tab_index == 4:
-            pass
+            self.canvlist[tab_index].delete('data')
+            data = self.index4_tuple_list[cur[0]]
+            barWidth = (cvwidth - 10) / 4 - 10
+            
+            self.canvlist[tab_index].create_rectangle(10 + 1*barWidth + 5, cvheight - (data[1] / self.max_qual) * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(10 + 3*barWidth + 5, cvheight - (data[0] / self.max_area) *10 * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
+            
+            self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
+            self.canvlist[tab_index].create_text(10 + 3*barWidth + (barWidth / 2),cvheight - 10,text="총 면적",tags='data')
 
         elif tab_index == 5:
             pass
