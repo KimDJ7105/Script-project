@@ -97,12 +97,12 @@ class MainGUI:
             
             for item in root.iter('row'):
                 name = item.findtext('FACLT_NM') #시설명
-                capa = item.findtext('USE_MBER_CNT') #이용중인 회원 수
                 num = item.findtext('DETAIL_TELNO') #전화번호
-                depart = item.findtext('JURISD_CHARGE_DEPT_NM') #관할 담당 부서
+                if num == '' :
+                    num = '-'
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 전화번호 : " + num + " 회원 수 : " + capa + " 관할 부서 : " + depart)
+                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 전화번호 : " + num)
 
         elif tab_index == 3:
             # 의료복지시설 검색
