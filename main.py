@@ -6,10 +6,8 @@ import io
 import requests
 import tkinter.ttk
 import xml.etree.ElementTree as ET
+from keys import *
 
-key = 'fc79933d2b8f4ef3bdb6190a73ae8314'
-#구글지도 키
-google_key ='AIzaSyB1AGcPSS2la62Bc5hfYe2udrZbq-HQBlQ'
 gmaps = googlemaps.Client(key=google_key)
 
 cvwidth = 425
