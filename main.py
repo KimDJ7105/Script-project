@@ -222,14 +222,55 @@ class MainGUI:
             
             root = ET.fromstring(response.text)
             
+            self.index5_tuple_list.clear()
+            
+            self.max_capa = 0
+            self.max_size = 0
+            self.max_qual = 0
+            
+            avg_capa = 0
+            avg_size = 0
+            avg_qual = 0
+            count = 0
+            
             for item in root.iter('row'):
                 name = item.findtext('FACLT_NM') #시설명
                 lot_type = item.findtext('LOTOUT_TYPE') #분양유형
-                qual = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
-                c_capa = item.findtext('ENTRNC_PSTPSN_SUM') #입소현원
+                telno = item.findtext('DETAIL_TELNO') #전화번호
+                capa = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
+                cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #현재 입주 인수
+                cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사자 현원
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                self.index5_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 
-                self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 총 세대수 / 입소현원 : " + qual + " / " + c_capa)
+                avg_capa += int(capa)
+                avg_size += int(cur_size)
+                avg_qual += int(cur_qual)
+                count += 1
+                
+                if self.max_capa < int(capa) :
+                    self.max_capa = int(capa)
+                if self.max_size < int(cur_size) :
+                    self.max_size = int(cur_size)
+                if self.max_qual < int(cur_qual) :
+                    self.max_qual = int(cur_qual)
+                
+                self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 전화번호 : " + telno)
+            
+            barWidth = (cvwidth - 10) / 6 - 10
+            
+            self.canvlist[tab_index].create_rectangle(20 + 0*barWidth + 10, cvheight - (avg_capa // count / self.max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 2*barWidth + 10, cvheight - (avg_size // count / self.max_size) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 4*barWidth + 10, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 5*barWidth,cvheight - 20,tags='avg',fill='red')
+            
+            self.canvlist[tab_index].create_text(20 + 0*barWidth + (barWidth / 2),cvheight - 10,text="총 세대수")
+            self.canvlist[tab_index].create_text(20 + 2*barWidth + (barWidth / 2),cvheight - 10,text="입소 현원")
+            self.canvlist[tab_index].create_text(20 + 4*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원")
+            
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 5 , cvwidth - 15 , cvheight // 2 + 20,tag='config',fill='red')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 27,text="평균")
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
     def on_select(self,tab_index) : #리스트 박스에서 항목 선택시 실행될 함수
         cur = self.lboxlist[tab_index].curselection()
@@ -353,6 +394,7 @@ class MainGUI:
         self.ad_list = []
         self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
         self.index4_tuple_list = [] #tab_index 4 일자리지원센터의 그래프에 필요한 정보를 (총면적, 종사 현원)으로 저장하는 리스트
+        self.index5_tuple_list = [] #tab_index 5 노인주거복지시설의 그래프에 필요한 정보를 (세대수, 입소 현원, 종사자 현원) 으로 저장하는 리스트
         
         self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
         self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
