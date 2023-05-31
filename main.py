@@ -324,7 +324,19 @@ class MainGUI:
             self.canvlist[tab_index].create_text(10 + 3*barWidth + (barWidth / 2),cvheight - 10,text="총 면적",tags='data')
 
         elif tab_index == 5:
-            pass
+            self.canvlist[tab_index].delete('data')
+            data = self.index5_tuple_list[cur[0]]
+            barWidth = (cvwidth - 10) / 6 - 10
+            
+            self.canvlist[tab_index].create_rectangle(20 + 1*barWidth + 10, cvheight - (data[0] / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
+            if data[1] > 0 :
+                self.canvlist[tab_index].create_rectangle(20 + 3*barWidth + 10, cvheight - (data[1] / self.max_size) * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
+            if data[2] > 0 :
+                self.canvlist[tab_index].create_rectangle(20 + 5*barWidth + 10, cvheight - (data[2] / self.max_qual) * cvheight - 10, 10 + 6*barWidth,cvheight - 20,tags='data',fill='blue')
+            
+            self.canvlist[tab_index].create_text(20 + 1*barWidth + (barWidth / 2),cvheight - 10,text="총 세대수",tags='data')
+            self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="입소 현원",tags='data')
+            self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
         
         #선택된 시설의 구글맵 출력
         geocode_result = gmaps.geocode(self.ad_list[cur[0]])
