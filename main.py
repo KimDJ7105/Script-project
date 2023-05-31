@@ -152,9 +152,9 @@ class MainGUI:
             
             barWidth = (cvwidth - 10) / 6 - 10
             
-            self.canvlist[tab_index].create_rectangle(20 + 0*barWidth + 10, cvheight - (avg_capa // count / self.max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
-            self.canvlist[tab_index].create_rectangle(20 + 2*barWidth + 10, cvheight - (avg_size // count / self.max_size) * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
-            self.canvlist[tab_index].create_rectangle(20 + 4*barWidth + 10, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 5*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 0*barWidth + 10, cvheight - (avg_capa // count / self.max_capa)*3 * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 2*barWidth + 10, cvheight - (avg_size // count / self.max_size)*3 * cvheight - 10, 10 + 3*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_rectangle(20 + 4*barWidth + 10, cvheight - (avg_qual // count / self.max_qual)*3 * cvheight - 10, 10 + 5*barWidth,cvheight - 20,tags='avg',fill='red')
             
             self.canvlist[tab_index].create_text(20 + 0*barWidth + (barWidth / 2),cvheight - 10,text="입소 정원")
             self.canvlist[tab_index].create_text(20 + 2*barWidth + (barWidth / 2),cvheight - 10,text="공석")
@@ -262,9 +262,10 @@ class MainGUI:
             data = self.index3_tuple_list[cur[0]]
             barWidth = (cvwidth - 10) / 6 - 10
             
-            self.canvlist[tab_index].create_rectangle(20 + 1*barWidth + 10, cvheight - (data[0] / self.max_capa) * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
-            self.canvlist[tab_index].create_rectangle(20 + 3*barWidth + 10, cvheight - ((data[0] - data[1]) / self.max_size) * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
-            self.canvlist[tab_index].create_rectangle(20 + 5*barWidth + 10, cvheight - (data[2] / self.max_qual) * cvheight - 10, 10 + 6*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(20 + 1*barWidth + 10, cvheight - (data[0] / self.max_capa)*3 * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
+            if (data[0] - data[1]) > 0 :
+                self.canvlist[tab_index].create_rectangle(20 + 3*barWidth + 10, cvheight - ((data[0] - data[1]) / self.max_size)*3 * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_rectangle(20 + 5*barWidth + 10, cvheight - (data[2] / self.max_qual)*3 * cvheight - 10, 10 + 6*barWidth,cvheight - 20,tags='data',fill='blue')
             
             self.canvlist[tab_index].create_text(20 + 1*barWidth + (barWidth / 2),cvheight - 10,text="입소 정원",tags='data')
             self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="공석",tags='data')
