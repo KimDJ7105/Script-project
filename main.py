@@ -412,7 +412,7 @@ class MainGUI:
         nb.add(self.framelist[5], text='주거복지시설')
         nb.add(self.framelist[6], text='즐겨찾기')
 
-        #검색 버튼 추가
+        #검색, 즐겨찾기 버튼
         for i in range(7):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
