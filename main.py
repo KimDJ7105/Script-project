@@ -1,11 +1,12 @@
 from tkinter import *
-#import tkinter as tk
 import googlemaps
 from PIL import Image, ImageTk
 import io
 import requests
 import tkinter.ttk
 import xml.etree.ElementTree as ET
+import pickle
+from tkinter import messagebox
 from keys import *
 
 gmaps = googlemaps.Client(key=google_key)
@@ -16,6 +17,36 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
+    def add_to_bookmarks(self, bookmark):
+        # 즐겨찾기에 항목 추가하는 메소드
+        self.bookmarks.append(bookmark)
+        self.save_bookmarks()  # 변경된 즐겨찾기 정보 저장
+
+    def save_bookmarks(self):
+        # 즐겨찾기 정보를 파일로 저장하는 메소드
+        with open(self.bookmark_file, "wb") as f:
+            pickle.dump(self.bookmarks, f)
+
+    def load_bookmarks(self):
+        # 저장된 즐겨찾기 정보를 파일에서 로드하는 메소드
+        try:
+            with open(self.bookmark_file, "rb") as f:
+                self.bookmarks = pickle.load(f)
+        except FileNotFoundError:
+            # 파일이 존재하지 않는 경우 빈 리스트로 초기화
+            self.bookmarks = []
+
+    def add_current_to_bookmarks(self, tab_index):
+        # 현재 선택된 정보를 즐겨찾기에 추가하는 메소드
+        selected_index = self.lboxlist[tab_index].curselection()
+        if selected_index:
+            selected_info = self.lboxlist[tab_index].get(selected_index[0])
+            self.add_to_bookmarks(selected_info)
+            messagebox.showinfo("즐겨찾기 추가", "즐겨찾기에 추가되었습니다.")
+
+            # 즐겨찾기된 정보를 해당 리스트박스에 추가
+            self.lboxlist[6].insert(END, selected_info)
+
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
         self.lboxlist[tab_index].delete(0,END)  # 검색 결과 초기화
@@ -358,6 +389,12 @@ class MainGUI:
         window = Tk()
         window.title("노인통합 서비스")
         window.geometry("800x600")
+        # 즐겨찾기 정보를 저장할 파일 경로
+        self.bookmark_file = "bookmark_data.pkl"
+        self.bookmarks = []  # 즐겨찾기 정보를 담을 리스트
+
+        # 저장된 즐겨찾기 정보 로드
+        self.load_bookmarks()
 
         nb = tkinter.ttk.Notebook(window, width=800, height=600)
         nb.pack()
@@ -375,8 +412,10 @@ class MainGUI:
         nb.add(self.framelist[5], text='주거복지시설')
         nb.add(self.framelist[6], text='즐겨찾기')
 
+        #검색 버튼 추가
         for i in range(7):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
+            Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
@@ -406,6 +445,7 @@ class MainGUI:
         self.index4_tuple_list = [] #tab_index 4 일자리지원센터의 그래프에 필요한 정보를 (총면적, 종사 현원)으로 저장하는 리스트
         self.index5_tuple_list = [] #tab_index 5 노인주거복지시설의 그래프에 필요한 정보를 (세대수, 입소 현원, 종사자 현원) 으로 저장하는 리스트
 
+        #선택 부분
         for i in range(7):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
 
