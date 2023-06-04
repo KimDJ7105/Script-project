@@ -17,6 +17,19 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
+    # 선택한 구의 병원 위치 마커 추가
+    def zoom_in(self):
+        global zoom
+        zoom += 1
+
+    update_map()
+
+    def zoom_out(self):
+        global zoom
+        if zoom > 1:
+            zoom -= 1
+
+    update_map()
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
         self.bookmarks.append(bookmark)
@@ -416,6 +429,8 @@ class MainGUI:
         for i in range(7):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
+            Button(self.framelist[i], text='+', command=lambda: self.zoom_in).place(x=435, y=250 + mapcvheight)
+            Button(self.framelist[i], text='-', command=lambda: self.zoom_out).place(x=470, y=250 + mapcvheight)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
