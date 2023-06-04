@@ -106,13 +106,47 @@ class MainGUI:
             for item in root.iter('row'):
                 if item.findtext('BSN_STATE_NM') == '폐업' :
                     continue
-                
+                area = item.findtext('SIGUN_NM') #지역
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
                 self.ad_list.append(address)
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 주소 : ' + address)
+                #self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 주소 : ' + address)
+
+                #이런 식으로 지역과 시설명만 출력되게 하는건 어떨까?
+                self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
+            #요양시설이 대부분 의원이라 주변 약국정보를 밑에 캔버스에 그래프로 넣으면 어떨까 싶어서 일단 넣어둠.
+            # 약국 검색
+            url = f'https://openapi.gg.go.kr/Parmacy'
+            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 100, 'SIGUN_NM': search_query}
+            response = requests.get(url, params=params)
+
+            root = ET.fromstring(response.text)
+
+            count_by_area = {}
+            total_count = 0
+
+            for item in root.iter('row'):
+                area = item.findtext('SIGUN_NM')  # 지역명
+                if area not in count_by_area:
+                    count_by_area[area] = 1  # 새로운 지역 등장, 약국 수를 1로 초기화
+                else:
+                    count_by_area[area] += 1  # 이미 등록된 지역, 약국 수를 1 증가
+
+                total_count += 1  # 시설의 총 개수를 1 증가
+
+            #area_count = len(count_by_area)
+            #print("지역의 개수:", area_count)
+            #print("시설의 총 개수:", total_count)
+
+            avg_count = total_count / len(count_by_area)
+
+            barWidth = (cvwidth - 10) / 4 - 10
+
+            self.canvlist[tab_index].create_rectangle(10 + 0 * barWidth + 5,cvheight - (avg_count / total_count) * (cvheight - 30) - 10, 10 + 1 * barWidth, cvheight - 20, tags='avg', fill='red')
+            self.canvlist[tab_index].create_text(10 + 0 * barWidth + (barWidth / 2), cvheight - 10, text="평균")
+
 
         elif tab_index == 1:
             # 전문병원 검색
