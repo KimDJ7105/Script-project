@@ -22,14 +22,14 @@ class MainGUI:
         global zoom
         zoom += 1
 
-    update_map()
+    #update_map()
 
     def zoom_out(self):
         global zoom
         if zoom > 1:
             zoom -= 1
 
-    update_map()
+    #update_map()
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
         self.bookmarks.append(bookmark)
