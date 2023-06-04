@@ -375,14 +375,9 @@ class MainGUI:
         nb.add(self.framelist[5], text='주거복지시설')
         nb.add(self.framelist[6], text='즐겨찾기')
 
-        Button(self.framelist[0], text='검색', command=lambda: self.search(0)).place(x=150, y=10)
-        Button(self.framelist[1], text='검색', command=lambda: self.search(1)).place(x=150, y=10)
-        Button(self.framelist[2], text='검색', command=lambda: self.search(2)).place(x=150, y=10)
-        Button(self.framelist[3], text='검색', command=lambda: self.search(3)).place(x=150, y=10)
-        Button(self.framelist[4], text='검색', command=lambda: self.search(4)).place(x=150, y=10)
-        Button(self.framelist[5], text='검색', command=lambda: self.search(5)).place(x=150, y=10)
-        Button(self.framelist[6], text='검색', command=lambda: self.search(6)).place(x=150, y=10)
-        
+        for i in range(7):
+            Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
+
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
         self.canvlist = [] #켄버스가 담길 리스트
@@ -410,15 +405,10 @@ class MainGUI:
         self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
         self.index4_tuple_list = [] #tab_index 4 일자리지원센터의 그래프에 필요한 정보를 (총면적, 종사 현원)으로 저장하는 리스트
         self.index5_tuple_list = [] #tab_index 5 노인주거복지시설의 그래프에 필요한 정보를 (세대수, 입소 현원, 종사자 현원) 으로 저장하는 리스트
-        
-        self.lboxlist[0].bind("<<ListboxSelect>>", lambda event : self.on_select(0))
-        self.lboxlist[1].bind("<<ListboxSelect>>", lambda event : self.on_select(1))
-        self.lboxlist[2].bind("<<ListboxSelect>>", lambda event : self.on_select(2))
-        self.lboxlist[3].bind("<<ListboxSelect>>", lambda event : self.on_select(3))
-        self.lboxlist[4].bind("<<ListboxSelect>>", lambda event : self.on_select(4))
-        self.lboxlist[5].bind("<<ListboxSelect>>", lambda event : self.on_select(5))
-        self.lboxlist[6].bind("<<ListboxSelect>>", lambda event : self.on_select(6))
-        
+
+        for i in range(7):
+            self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
+
         window.mainloop()
 
 
