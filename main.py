@@ -59,7 +59,8 @@ class MainGUI:
 
             # 지도 이미지 출력
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img, tags="map_image")
-            self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+            self.mapcanv[tab_index].image = None  # 이전 이미지 참조 삭제
+            self.mapcanv[tab_index].image = img  # 새로운 이미지 참조 저장
 
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
@@ -421,7 +422,8 @@ class MainGUI:
         if geocode_result:
             location = geocode_result[0]['geometry']['location']
             lat, lng = location['lat'], location['lng']
-            map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+            self.zoom_level = 14
+            map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
             # 마커 추가
             marker_url = f"&markers=color:red%7C{lat},{lng}"
             map_url += marker_url
@@ -435,9 +437,8 @@ class MainGUI:
             self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
             # 초기값 설정
-            self.center_lat = lat
-            self.center_lng = lng
-            self.zoom_level = 14
+            #self.center_lat = lat
+            #self.center_lng = lng
 
     def __init__(self):
         window = Tk()
