@@ -467,8 +467,10 @@ class MainGUI:
 
         # +, - 버튼
         for i in range(7):
-            Button(self.framelist[i], text='+', command=lambda: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
-            Button(self.framelist[i], text='-', command=lambda: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
+            Button(self.framelist[i], text='+', command=lambda i=i: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
+            Button(self.framelist[i], text='-', command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
+        #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성.
+        Button(self.framelist[6],text='텔레그램').place(x=435, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
