@@ -17,19 +17,36 @@ mapcvwidth = 350
 mapcvheight = 300
 
 class MainGUI:
-    # 선택한 구의 병원 위치 마커 추가
-    def zoom_in(self):
-        global zoom
-        zoom += 1
+    def zoom_in(self, tab_index):
+        # 확대 레벨 증가
+        self.zoom_level += 1
 
-    #update_map()
+        # 지도 URL 업데이트
+        map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.center_lat},{self.center_lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
 
-    def zoom_out(self):
-        global zoom
-        if zoom > 1:
-            zoom -= 1
+        # 지도 이미지 업데이트
+        img_data = requests.get(map_url).content
+        img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
 
-    #update_map()
+        # 지도 이미지 출력
+        self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
+        self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+
+    def zoom_out(self, tab_index):
+        # 확대 레벨 감소
+        self.zoom_level -= 1
+
+        # 지도 URL 업데이트
+        map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.center_lat},{self.center_lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
+
+        # 지도 이미지 업데이트
+        img_data = requests.get(map_url).content
+        img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+
+        # 지도 이미지 출력
+        self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
+        self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
         self.bookmarks.append(bookmark)
@@ -391,9 +408,14 @@ class MainGUI:
             location = geocode_result[0]['geometry']['location']
             lat, lng = location['lat'], location['lng']
             map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom=14&size=400x300&key={google_key}"
+            # 마커 추가
+            marker_url = f"&markers=color:red%7C{lat},{lng}"
+            map_url += marker_url
+
             # 구글 지도 표시
             img_data = requests.get(map_url).content
             img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+
             # 선택된 항목에 해당하는 이미지 출력
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
@@ -414,6 +436,7 @@ class MainGUI:
 
         self.framelist = []
 
+
         for _ in range(7):
             self.framelist.append(Frame(window))
 
@@ -429,8 +452,8 @@ class MainGUI:
         for i in range(7):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
-            Button(self.framelist[i], text='+', command=lambda: self.zoom_in).place(x=435, y=250 + mapcvheight)
-            Button(self.framelist[i], text='-', command=lambda: self.zoom_out).place(x=470, y=250 + mapcvheight)
+            Button(self.framelist[i], text='+', command=lambda: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
+            Button(self.framelist[i], text='-', command=lambda: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
@@ -463,6 +486,10 @@ class MainGUI:
         #선택 부분
         for i in range(7):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
+
+        #self.center_lat = initial_lat
+        #self.center_lng = initial_lng
+        #self.zoom_level = initial_zoom
 
         window.mainloop()
 
