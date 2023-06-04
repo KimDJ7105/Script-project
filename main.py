@@ -59,16 +59,11 @@ class MainGUI:
 
             # 지도 이미지 출력
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img, tags="map_image")
-            self.mapcanv[tab_index].image = None  # 이전 이미지 참조 삭제
             self.mapcanv[tab_index].image = img  # 새로운 이미지 참조 저장
 
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
         self.bookmarks.append(bookmark)
-        self.save_bookmarks()  # 변경된 즐겨찾기 정보 저장
-
-    def save_bookmarks(self):
-        # 즐겨찾기 정보를 파일로 저장하는 메소드
         with open(self.bookmark_file, "wb") as f:
             pickle.dump(self.bookmarks, f)
 
@@ -436,10 +431,6 @@ class MainGUI:
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
-            # 초기값 설정
-            #self.center_lat = lat
-            #self.center_lng = lng
-
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
@@ -469,9 +460,13 @@ class MainGUI:
         nb.add(self.framelist[6], text='즐겨찾기')
 
         #검색, 즐겨찾기 버튼
-        for i in range(7):
+        #즐겨찾기 부분에서는 굳이 검색과 즐겨찾기 버튼이 불필요해 보여서 제외함.
+        for i in range(6):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
+
+        # +, - 버튼
+        for i in range(7):
             Button(self.framelist[i], text='+', command=lambda: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
             Button(self.framelist[i], text='-', command=lambda: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
 
