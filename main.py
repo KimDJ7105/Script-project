@@ -21,31 +21,45 @@ class MainGUI:
         # 확대 레벨 증가
         self.zoom_level += 1
 
-        # 지도 URL 업데이트
-        map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.center_lat},{self.center_lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
-
-        # 지도 이미지 업데이트
-        img_data = requests.get(map_url).content
-        img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
-
-        # 지도 이미지 출력
-        self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
-        self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+        # 지도 업데이트
+        self.update_map(tab_index)
 
     def zoom_out(self, tab_index):
         # 확대 레벨 감소
         self.zoom_level -= 1
 
-        # 지도 URL 업데이트
-        map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={self.center_lat},{self.center_lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
+        # 지도 업데이트
+        self.update_map(tab_index)
 
-        # 지도 이미지 업데이트
-        img_data = requests.get(map_url).content
-        img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+    def update_map(self, tab_index):
+        # 기존 이미지 삭제
+        self.mapcanv[tab_index].delete("map_image")
 
-        # 지도 이미지 출력
-        self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
-        self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+        # 선택된 항목 가져오기
+        cur = self.lboxlist[tab_index].curselection()
+        if not cur:
+            return
+        item = self.lboxlist[tab_index].get(cur)
+
+        # 주소 정보 가져오기
+        geocode_result = gmaps.geocode(item)
+        if geocode_result:
+            location = geocode_result[0]['geometry']['location']
+            lat, lng = location['lat'], location['lng']
+            # 지도 URL 업데이트
+            map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
+
+            # 마커 추가
+            marker_url = f"&markers=color:red%7C{lat},{lng}"
+            map_url += marker_url
+
+            # 지도 이미지 다운로드
+            img_data = requests.get(map_url).content
+            img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+
+            # 지도 이미지 출력
+            self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img, tags="map_image")
+            self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
     def add_to_bookmarks(self, bookmark):
         # 즐겨찾기에 항목 추가하는 메소드
@@ -420,6 +434,11 @@ class MainGUI:
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
             self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
+            # 초기값 설정
+            self.center_lat = lat
+            self.center_lng = lng
+            self.zoom_level = 14
+
     def __init__(self):
         window = Tk()
         window.title("노인통합 서비스")
@@ -486,10 +505,6 @@ class MainGUI:
         #선택 부분
         for i in range(7):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
-
-        #self.center_lat = initial_lat
-        #self.center_lng = initial_lng
-        #self.zoom_level = initial_zoom
 
         window.mainloop()
 
