@@ -102,7 +102,7 @@ class MainGUI:
             response = requests.get(url, params=params)
             
             root = ET.fromstring(response.text)
-            ad_list = []
+            
             for item in root.iter('row'):
                 if item.findtext('BSN_STATE_NM') == '폐업' :
                     continue
@@ -111,10 +111,6 @@ class MainGUI:
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
                 self.ad_list.append(address)
-                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요, 정보가 없는게 생각보다 많음
-                #self.lboxlist[tab_index].insert(END,"시설명 : " + name + ' 주소 : ' + address)
-
-                #이런 식으로 지역과 시설명만 출력되게 하는건 어떨까?
                 self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
             #요양시설이 대부분 의원이라 주변 약국정보를 밑에 캔버스에 그래프로 넣으면 어떨까 싶어서 일단 넣어둠.
             # 약국 검색
