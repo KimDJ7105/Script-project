@@ -115,33 +115,32 @@ class MainGUI:
             #요양시설이 대부분 의원이라 주변 약국정보를 밑에 캔버스에 그래프로 넣으면 어떨까 싶어서 일단 넣어둠.
             # 약국 검색
             url = f'https://openapi.gg.go.kr/Parmacy'
-            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 100, 'SIGUN_NM': search_query}
+            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 300, 'SIGUN_NM': search_query}
             response = requests.get(url, params=params)
 
             root = ET.fromstring(response.text)
 
-            count_by_area = {}
+            self.count_by_area.clear()
             total_count = 0
 
             for item in root.iter('row'):
                 area = item.findtext('SIGUN_NM')  # 지역명
-                if area not in count_by_area:
-                    count_by_area[area] = 1  # 새로운 지역 등장, 약국 수를 1로 초기화
+                if area not in self.count_by_area:
+                    self.count_by_area[area] = 1  # 새로운 지역 등장, 약국 수를 1로 초기화
                 else:
-                    count_by_area[area] += 1  # 이미 등록된 지역, 약국 수를 1 증가
+                    self.count_by_area[area] += 1  # 이미 등록된 지역, 약국 수를 1 증가
 
                 total_count += 1  # 시설의 총 개수를 1 증가
 
-            #area_count = len(count_by_area)
-            #print("지역의 개수:", area_count)
-            #print("시설의 총 개수:", total_count)
-
-            avg_count = total_count / len(count_by_area)
-
-            barWidth = (cvwidth - 10) / 4 - 10
-
-            self.canvlist[tab_index].create_rectangle(10 + 0 * barWidth + 5,cvheight - (avg_count / total_count) * (cvheight - 30) - 10, 10 + 1 * barWidth, cvheight - 20, tags='avg', fill='red')
-            self.canvlist[tab_index].create_text(10 + 0 * barWidth + (barWidth / 2), cvheight - 10, text="평균")
+            barWidth = (cvwidth - 10) / 2 - 20
+            
+            self.canvlist[tab_index].create_rectangle(10 + 0*barWidth + 5, cvheight - (total_count / len(self.count_by_area) / max(self.count_by_area.values())) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
+            self.canvlist[tab_index].create_text(10 + 0 * barWidth + (barWidth / 2), cvheight - 10, text="인근 약국 수")
+            
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 5 , cvwidth - 15 , cvheight // 2 + 20,tag='config',fill='red')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 27,text="평균")
+            self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
+            self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
 
         elif tab_index == 1:
@@ -385,7 +384,14 @@ class MainGUI:
         item = self.lboxlist[tab_index].get(cur)
 
         if tab_index == 0:
-            pass
+            self.canvlist[tab_index].delete('data')
+            
+            barWidth = (cvwidth - 10) / 2 - 20
+            
+            region = item.split(" ")[1][1:-1]
+            
+            self.canvlist[tab_index].create_rectangle(10 + 1*barWidth + 5, cvheight - ( self.count_by_area[region] / max(self.count_by_area.values())) * cvheight - 10, 10 + 2*barWidth,cvheight - 20,tags='data',fill='blue')
+            self.canvlist[tab_index].create_text(10 + 1 * barWidth + (barWidth / 2), cvheight - 10, text="인근 약국 수")
 
         elif tab_index == 1:
             self.canvlist[tab_index].delete('data')
@@ -507,6 +513,7 @@ class MainGUI:
         self.lboxlist = [] #리스트 박스가 담길 리스트
         self.canvlist = [] #켄버스가 담길 리스트
         self.mapcanv = [] #구글지도 캔버스
+        self.count_by_area = {} #지역별 약국 수를 기록하기 위한 딕셔너리
 
         for i in range(7):
             self.entrylist.append(Entry(self.framelist[i], width=19))
