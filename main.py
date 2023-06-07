@@ -489,11 +489,12 @@ class MainGUI:
         nb.add(self.framelist[5], text='주거복지시설')
         nb.add(self.framelist[6], text='즐겨찾기')
 
+        image = PhotoImage(file = 'resource/star.png')
         #검색, 즐겨찾기 버튼
         #즐겨찾기 부분에서는 굳이 검색과 즐겨찾기 버튼이 불필요해 보여서 제외함.
         for i in range(6):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
-            Button(self.framelist[i], text='즐겨찾기', command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
+            Button(self.framelist[i], text='', image=image, width=50, height= 50, command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
 
         # +, - 버튼
         for i in range(7):
