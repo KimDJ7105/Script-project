@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import ttk #배경 이미지 구현하며 추가
+import tkinter as tk    #배경 이미지 구현하며 추가
 import googlemaps
 from PIL import Image, ImageTk
 import io
@@ -11,9 +13,9 @@ from keys import *
 
 gmaps = googlemaps.Client(key=google_key)
 
-cvwidth = 425
+cvwidth = 415
 cvheight = 300
-mapcvwidth = 350
+mapcvwidth = 340
 mapcvheight = 300
 
 class MainGUI:
@@ -85,7 +87,7 @@ class MainGUI:
             messagebox.showinfo("즐겨찾기 추가", "즐겨찾기에 추가되었습니다.")
 
             # 즐겨찾기된 정보를 해당 리스트박스에 추가
-            self.lboxlist[6].insert(END, selected_info)
+            self.lboxlist[5].insert(END, selected_info)
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -467,7 +469,7 @@ class MainGUI:
             self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
     def __init__(self):
-        window = Tk()
+        window = tk.Tk()
         window.title("노인통합 서비스")
         window.geometry("800x600")
         # 즐겨찾기 정보를 저장할 파일 경로
@@ -477,13 +479,32 @@ class MainGUI:
         # 저장된 즐겨찾기 정보 로드
         self.load_bookmarks()
 
-        nb = tkinter.ttk.Notebook(window, width=800, height=600)
+        bg_image_path = "resource/tree.png"
+        image = PhotoImage(file='resource/star.png')
+        imageT = PhotoImage(file='resource/teleg.png')
+        plus_image = PhotoImage(file='resource/plus.png')
+        ms_image = PhotoImage(file='resource/ms.png')
+
+        # 배경 이미지 로드
+        bg_image = tk.PhotoImage(file=bg_image_path)
+
+        nb = tkinter.ttk.Notebook(window,width=800, height=600)
         nb.pack()
 
         self.framelist = []
 
+        #for _ in range(6):
+            #self.framelist.append(Frame(window))
         for _ in range(6):
-            self.framelist.append(Frame(window))
+            frame = ttk.Frame(nb)
+            frame.pack()
+            self.framelist.append(frame)
+
+        # 각 노트북 탭에 배경 이미지 설정
+        for frame in self.framelist:
+            canvas = tk.Canvas(frame, width=800, height=600)
+            canvas.pack(fill="both", expand=True)
+            canvas.create_image(0, 0, anchor="nw", image=bg_image)
 
         nb.add(self.framelist[0], text='요양시설')
         nb.add(self.framelist[1], text='전문병원')
@@ -492,18 +513,15 @@ class MainGUI:
         nb.add(self.framelist[4], text='주거복지시설')
         nb.add(self.framelist[5], text='즐겨찾기')
 
-        image = PhotoImage(file = 'resource/star.png')
-        imageT = PhotoImage(file = 'resource/teleg.png')
         #검색, 즐겨찾기 버튼
-        #즐겨찾기 부분에서는 굳이 검색과 즐겨찾기 버튼이 불필요해 보여서 제외함.
         for i in range(5):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='', image=image, width=50, height= 50, command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
 
         # +, - 버튼
         for i in range(6):
-            Button(self.framelist[i], text='+', command=lambda i=i: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
-            Button(self.framelist[i], text='-', command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
+            Button(self.framelist[i], text='', image=plus_image, width=18, height=18, command=lambda i=i: self.zoom_in(i)).place(x=440, y=250 + mapcvheight)
+            Button(self.framelist[i], text='', image=ms_image, width=18, height=18, command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성. 즐겨찾기 취소 기능 버튼.
         Button(self.framelist[5],text='', image=imageT, width=50, height= 50).place(x=250, y=10)
         Button(self.framelist[5], text='', image=image, width=50, height= 50).place(x=190, y=10)
@@ -518,19 +536,19 @@ class MainGUI:
             self.entrylist.append(Entry(self.framelist[i], width=19))
             self.entrylist[i].place(x=10, y=10)
 
-            self.lboxlist.append(Listbox(self.framelist[i], width=60, height=10))
-            self.lboxlist[i].place(x=5, y=80)
+            self.lboxlist.append(Listbox(self.framelist[i], width=57, height=10))
+            self.lboxlist[i].place(x=10, y=80)
             # 리스트박스 스크롤바
             scrollbar = Scrollbar(self.framelist[i])
             self.lboxlist[i].config(yscrollcommand=scrollbar.set)
             scrollbar.config(command=self.lboxlist[i].yview)
-            scrollbar.place(x=420, y=70, height=180)
+            scrollbar.place(x=413, y=80, height=164)
 
             self.canvlist.append(Canvas(self.framelist[i], bg='white', width=cvwidth, height=cvheight))
-            self.canvlist[i].place(x=5, y=250)
+            self.canvlist[i].place(x=10, y=250)
 
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
-            self.mapcanv[i].place(x=435, y=250)
+            self.mapcanv[i].place(x=440, y=250)
 
         self.ad_list = []
         self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
