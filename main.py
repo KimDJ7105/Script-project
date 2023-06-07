@@ -142,7 +142,6 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
             self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
-
         elif tab_index == 1:
             # 전문병원 검색
             url = f'https://openapi.gg.go.kr/OldPersonSpecialityHospital'
@@ -489,7 +488,7 @@ class MainGUI:
 
         nb.add(self.framelist[0], text='요양시설')
         nb.add(self.framelist[1], text='전문병원')
-        nb.add(self.framelist[2], text='여가복지시설')
+        #nb.add(self.framelist[2], text='여가복지시설')
         nb.add(self.framelist[3], text='의료복지시설')
         nb.add(self.framelist[4], text='일자리지원기관')
         nb.add(self.framelist[5], text='주거복지시설')
