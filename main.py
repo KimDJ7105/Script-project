@@ -482,6 +482,7 @@ class MainGUI:
         bg_image_path = "resource/tree.png"
         image = PhotoImage(file='resource/star.png')
         imageT = PhotoImage(file='resource/teleg.png')
+        imageNV = PhotoImage(file='resource/NV.png')
         plus_image = PhotoImage(file='resource/plus.png')
         ms_image = PhotoImage(file='resource/ms.png')
 
@@ -523,8 +524,9 @@ class MainGUI:
             Button(self.framelist[i], text='', image=plus_image, width=18, height=18, command=lambda i=i: self.zoom_in(i)).place(x=440, y=250 + mapcvheight)
             Button(self.framelist[i], text='', image=ms_image, width=18, height=18, command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성. 즐겨찾기 취소 기능 버튼.
-        Button(self.framelist[5],text='', image=imageT, width=50, height= 50).place(x=250, y=10)
+        Button(self.framelist[5],text='', image=imageT, width=50, height= 50).place(x=310, y=10)
         Button(self.framelist[5], text='', image=image, width=50, height= 50).place(x=190, y=10)
+        Button(self.framelist[5], text='', image=imageNV, width=50, height=50).place(x=250, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
