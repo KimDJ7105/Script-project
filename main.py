@@ -112,7 +112,6 @@ class MainGUI:
                 
                 self.ad_list.append(address)
                 self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
-            #요양시설이 대부분 의원이라 주변 약국정보를 밑에 캔버스에 그래프로 넣으면 어떨까 싶어서 일단 넣어둠.
             # 약국 검색
             url = f'https://openapi.gg.go.kr/Parmacy'
             params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 300, 'SIGUN_NM': search_query}
@@ -157,6 +156,7 @@ class MainGUI:
             self.max_qual = 0
             
             for item in root.iter('row'):
+                H_area = item.findtext('SIGUN_NM')  # 지역
                 name = item.findtext('HOSPTL_NM') #병원명
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
@@ -176,6 +176,8 @@ class MainGUI:
                 #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
                 #위치 정보도 있음, 홈페이지 주소도.
                 self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
+                #아래 코드로 바꾸려는데 그래프에서 오류 발생.
+                #self.lboxlist[tab_index].insert(END, ' <' + H_area + '> ' + name)
             
             barWidth = (cvwidth - 10) / 4 - 10
             
@@ -206,7 +208,7 @@ class MainGUI:
                 
         #         self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 전화번호 : " + num)
 
-        elif tab_index == 3:
+        elif tab_index == 2:
             # 의료복지시설 검색
             url = f'https://openapi.gg.go.kr/OldpsnMedcareWelfac'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
@@ -226,6 +228,7 @@ class MainGUI:
             self.max_size = 0
             
             for item in root.iter('row'):
+                area = item.findtext('SIGUNGU_NM') #지역
                 name = item.findtext('FACLT_NM') #시설명
                 qual = item.findtext('LNGTR_RECPER_APPONT_INST_YN_NM') #장기요양지정 여부
                 telnum = item.findtext('DETAIL_TELNO') #전화번호
@@ -250,7 +253,7 @@ class MainGUI:
                 self.index3_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 장기요양지정 여부 : " + qual + " 전화번호 : " + telnum)
+                self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name + "   전화번호 : " + telnum)
             
             barWidth = (cvwidth - 10) / 6 - 10
             
@@ -267,7 +270,7 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
             self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
-        elif tab_index == 4:
+        elif tab_index == 3:
             # 일자리지원기관 검색
             url = f'https://openapi.gg.go.kr/OldpsnJobSportInst'
             params ={'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
@@ -285,6 +288,7 @@ class MainGUI:
             count = 0
             
             for item in root.iter('row'):
+                Harea = item.findtext(('SIGUN_NM')) #지역
                 name = item.findtext('FACLT_NM') #시설명
                 qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사자현원
                 telno = item.findtext('DETAIL_TELNO') #전화번호
@@ -316,7 +320,7 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
             self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
-        elif tab_index == 5:
+        elif tab_index == 4:
             # 주거복지시설 검색
             url = f'https://openapi.gg.go.kr/OldpsnHousngWelfaclt'
             params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': search_query}
@@ -404,10 +408,10 @@ class MainGUI:
             self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="병상 수",tags='data')
             self.canvlist[tab_index].create_text(12 + 3*barWidth + (barWidth / 2),cvheight - 10,text="진료과목 수",tags='data')
 
-        elif tab_index == 2:
-            pass
+        #elif tab_index == 2:
+            #pass
 
-        elif tab_index == 3:
+        elif tab_index == 2:
             self.canvlist[tab_index].delete('data')
             data = self.index3_tuple_list[cur[0]]
             barWidth = (cvwidth - 10) / 6 - 10
@@ -421,7 +425,7 @@ class MainGUI:
             self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="공석",tags='data')
             self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
 
-        elif tab_index == 4:
+        elif tab_index == 3:
             self.canvlist[tab_index].delete('data')
             data = self.index4_tuple_list[cur[0]]
             barWidth = (cvwidth - 10) / 4 - 10
@@ -432,7 +436,7 @@ class MainGUI:
             self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
             self.canvlist[tab_index].create_text(10 + 3*barWidth + (barWidth / 2),cvheight - 10,text="총 면적",tags='data')
 
-        elif tab_index == 5:
+        elif tab_index == 4:
             self.canvlist[tab_index].delete('data')
             data = self.index5_tuple_list[cur[0]]
             barWidth = (cvwidth - 10) / 6 - 10
@@ -482,31 +486,29 @@ class MainGUI:
 
         self.framelist = []
 
-
-        for _ in range(7):
+        for _ in range(6):
             self.framelist.append(Frame(window))
 
         nb.add(self.framelist[0], text='요양시설')
         nb.add(self.framelist[1], text='전문병원')
-        #nb.add(self.framelist[2], text='여가복지시설')
-        nb.add(self.framelist[3], text='의료복지시설')
-        nb.add(self.framelist[4], text='일자리지원기관')
-        nb.add(self.framelist[5], text='주거복지시설')
-        nb.add(self.framelist[6], text='즐겨찾기')
+        nb.add(self.framelist[2], text='의료복지시설')
+        nb.add(self.framelist[3], text='일자리지원기관')
+        nb.add(self.framelist[4], text='주거복지시설')
+        nb.add(self.framelist[5], text='즐겨찾기')
 
         image = PhotoImage(file = 'resource/star.png')
         #검색, 즐겨찾기 버튼
         #즐겨찾기 부분에서는 굳이 검색과 즐겨찾기 버튼이 불필요해 보여서 제외함.
-        for i in range(6):
+        for i in range(5):
             Button(self.framelist[i], text='검색', command=lambda i=i: self.search(i)).place(x=150, y=10)
             Button(self.framelist[i], text='', image=image, width=50, height= 50, command=lambda i=i: self.add_current_to_bookmarks(i)).place(x=190, y=10)
 
         # +, - 버튼
-        for i in range(7):
+        for i in range(6):
             Button(self.framelist[i], text='+', command=lambda i=i: self.zoom_in(i)).place(x=435, y=250 + mapcvheight)
             Button(self.framelist[i], text='-', command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성.
-        Button(self.framelist[6],text='텔레그램').place(x=435, y=10)
+        Button(self.framelist[5],text='텔레그램').place(x=435, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
@@ -514,7 +516,7 @@ class MainGUI:
         self.mapcanv = [] #구글지도 캔버스
         self.count_by_area = {} #지역별 약국 수를 기록하기 위한 딕셔너리
 
-        for i in range(7):
+        for i in range(6):
             self.entrylist.append(Entry(self.framelist[i], width=19))
             self.entrylist[i].place(x=10, y=10)
 
@@ -538,7 +540,7 @@ class MainGUI:
         self.index5_tuple_list = [] #tab_index 5 노인주거복지시설의 그래프에 필요한 정보를 (세대수, 입소 현원, 종사자 현원) 으로 저장하는 리스트
 
         #선택 부분
-        for i in range(7):
+        for i in range(6):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
 
         window.mainloop()
