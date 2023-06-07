@@ -135,7 +135,7 @@ class MainGUI:
             barWidth = (cvwidth - 10) / 2 - 20
             
             self.canvlist[tab_index].create_rectangle(10 + 0*barWidth + 5, cvheight - (total_count / len(self.count_by_area) / max(self.count_by_area.values())) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
-            self.canvlist[tab_index].create_text(10 + 0 * barWidth + (barWidth / 2), cvheight - 10, text="인근 약국 수")
+            self.canvlist[tab_index].create_text(10 + 0 * barWidth + (barWidth / 2), cvheight - 10, text="경기도 약국 수")
             
             self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 5 , cvwidth - 15 , cvheight // 2 + 20,tag='config',fill='red')
             self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 27,text="평균")
