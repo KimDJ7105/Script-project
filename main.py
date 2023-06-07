@@ -156,7 +156,7 @@ class MainGUI:
             self.max_qual = 0
             
             for item in root.iter('row'):
-                H_area = item.findtext('SIGUN_NM')  # 지역
+                Harea = item.findtext('SIGUN_NM')  # 지역
                 name = item.findtext('HOSPTL_NM') #병원명
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
@@ -177,7 +177,7 @@ class MainGUI:
                 #위치 정보도 있음, 홈페이지 주소도.
                 self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
                 #아래 코드로 바꾸려는데 그래프에서 오류 발생.
-                #self.lboxlist[tab_index].insert(END, ' <' + H_area + '> ' + name)
+                #self.lboxlist[tab_index].insert(END, ' <' + Harea + '> ' + name)
             
             barWidth = (cvwidth - 10) / 4 - 10
             
@@ -252,8 +252,7 @@ class MainGUI:
                 
                 self.index3_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
-                
-                self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name + "   전화번호 : " + telnum)
+                self.lboxlist[tab_index].insert(END, ' <' + area + '> ' + name + "   전화번호 : " + telnum)
             
             barWidth = (cvwidth - 10) / 6 - 10
             
@@ -305,8 +304,7 @@ class MainGUI:
                     self.max_qual = int(qual)
                 
                 self.index4_tuple_list.append((int(area), int(qual)))
-                
-                self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 종사자 현원 : " + qual + " 전화번호 : " + telno)
+                self.lboxlist[tab_index].insert(END, ' <' + Harea + '> ' + name + "   전화번호 : " + telno)
             barWidth = (cvwidth - 10) / 4 - 10
             
             self.canvlist[tab_index].create_rectangle(10 + 0*barWidth + 5, cvheight - (avg_qual // count / self.max_qual) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
@@ -340,6 +338,7 @@ class MainGUI:
             count = 0
             
             for item in root.iter('row'):
+                area = item.findtext(('SIGUN_NM'))  # 지역
                 name = item.findtext('FACLT_NM') #시설명
                 lot_type = item.findtext('LOTOUT_TYPE') #분양유형
                 telno = item.findtext('DETAIL_TELNO') #전화번호
@@ -360,8 +359,8 @@ class MainGUI:
                     self.max_size = int(cur_size)
                 if self.max_qual < int(cur_qual) :
                     self.max_qual = int(cur_qual)
-                
-                self.lboxlist[tab_index].insert(END,"시설명(유형) : " + name + "(" + lot_type + ")" + " 전화번호 : " + telno)
+
+                self.lboxlist[tab_index].insert(END, ' <' + area + '> ' + name + "   전화번호 : " + telno)
             
             barWidth = (cvwidth - 10) / 6 - 10
             
@@ -407,9 +406,6 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(10 + 3*barWidth + 5, cvheight - (qual / self.max_qual) * cvheight - 10, 10 + 4*barWidth,cvheight - 20,tags='data',fill='blue')
             self.canvlist[tab_index].create_text(10 + 1*barWidth + (barWidth / 2),cvheight - 10,text="병상 수",tags='data')
             self.canvlist[tab_index].create_text(12 + 3*barWidth + (barWidth / 2),cvheight - 10,text="진료과목 수",tags='data')
-
-        #elif tab_index == 2:
-            #pass
 
         elif tab_index == 2:
             self.canvlist[tab_index].delete('data')
