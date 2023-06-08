@@ -24,6 +24,9 @@ class MainGUI:
         program_path = "C:/Users/rlaeh/AppData/Roaming/Telegram Desktop/Telegram.exe"
         #텔레그램이 설치된 경로를 입력해줘야함.
         subprocess.Popen(program_path)
+        
+        python_script = "teller.py"
+        subprocess.Popen(["python", python_script])
     
     def zoom_in(self, tab_index):
         # 확대 레벨 증가
