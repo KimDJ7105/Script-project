@@ -199,23 +199,6 @@ class MainGUI:
             self.canvlist[tab_index].create_rectangle(cvwidth - 30, cvheight // 2 + 55 , cvwidth - 15 , cvheight // 2 + 70,tag='config',fill='blue')
             self.canvlist[tab_index].create_text(cvwidth - 23,cvheight//2 + 77,text="시설")
 
-        # elif tab_index == 2:
-        #     # 여가복지시설 검색
-        #     url = f'https://openapi.gg.go.kr/SenircentFaclt'
-        #     params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 100, 'SIGUN_NM': search_query}
-        #     response = requests.get(url,params=params)
-            
-        #     root = ET.fromstring(response.text)
-            
-        #     for item in root.iter('row'):
-        #         name = item.findtext('FACLT_NM') #시설명
-        #         num = item.findtext('DETAIL_TELNO') #전화번호
-        #         if num == '' :
-        #             num = '-'
-        #         self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
-                
-        #         self.lboxlist[tab_index].insert(END,"시설명 : " + name + " 전화번호 : " + num)
-
         elif tab_index == 2:
             # 의료복지시설 검색
             url = f'https://openapi.gg.go.kr/OldpsnMedcareWelfac'
