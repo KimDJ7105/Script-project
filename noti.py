@@ -28,20 +28,12 @@ url_list.append('https://openapi.gg.go.kr/OldpsnMedcareWelfa')
 url_list.append('https://openapi.gg.go.kr/OldpsnJobSportInst')
 url_list.append('https://openapi.gg.go.kr/OldpsnHousngWelfaclt')
 
+def getData(url_index, loc_param):
     res_list = []
-    url = baseurl+'&LAWD_CD='+loc_param+'&DEAL_YMD='+date_param
-    #print(url)
-    res_body = urlopen(url).read()
-    #print(res_body)
-    soup = BeautifulSoup(res_body, 'html.parser')
-    items = soup.findAll('item')
-    for item in items:
-        item = re.sub('<.*?>', '|', item.text)
-        parsed = item.split('|')
-        try:
-            row = parsed[3]+'/'+parsed[6]+'/'+parsed[7]+', '+parsed[4]+' '+parsed[5]+', '+parsed[8]+'m², '+parsed[11]+'F, '+parsed[1].strip()+'만원\n'
-        except IndexError:
-            row = item.replace('|', ',')
+    params = {'KEY' : key,'Type' : 'xml', 'pIndex' : 1, 'pSize' : 100, 'SIGUN_NM': loc_param}
+    response = requests.get(url_list[url_index], params=params)
+    
+    root = ET.fromstring(response.text)
 
         if row:
             res_list.append(row.strip())
