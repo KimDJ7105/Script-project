@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 import pickle
 from tkinter import messagebox
 from keys import *
+import subprocess
 
 gmaps = googlemaps.Client(key=google_key)
 
@@ -19,6 +20,11 @@ mapcvwidth = 340
 mapcvheight = 300
 
 class MainGUI:
+    def telon(self) :
+        program_path = "C:/Users/rlaeh/AppData/Roaming/Telegram Desktop/Telegram.exe"
+        #텔레그램이 설치된 경로를 입력해줘야함.
+        subprocess.Popen(program_path)
+    
     def zoom_in(self, tab_index):
         # 확대 레벨 증가
         self.zoom_level += 1
@@ -524,7 +530,7 @@ class MainGUI:
             Button(self.framelist[i], text='', image=plus_image, width=18, height=18, command=lambda i=i: self.zoom_in(i)).place(x=440, y=250 + mapcvheight)
             Button(self.framelist[i], text='', image=ms_image, width=18, height=18, command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성. 즐겨찾기 취소 기능 버튼.
-        Button(self.framelist[5],text='', image=imageT, width=50, height= 50).place(x=310, y=10)
+        Button(self.framelist[5],text='', image=imageT, width=50, height= 50, command=self.telon).place(x=310, y=10)
         Button(self.framelist[5], text='', image=image, width=50, height= 50).place(x=190, y=10)
         Button(self.framelist[5], text='', image=imageNV, width=50, height=50).place(x=250, y=10)
 
