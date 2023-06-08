@@ -6,8 +6,6 @@ import time
 import sqlite3
 import telepot
 from pprint import pprint
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
 import re
 from datetime import date, datetime, timedelta
 import traceback
@@ -15,9 +13,8 @@ import traceback
 import noti
 
 
-def replyAptData(date_param, user, loc_param='11710'):
-    print(user, date_param, loc_param)
-    res_list = noti.getData( loc_param, date_param )
+def replyAptData(url_index, user, loc_param=''):
+    res_list = noti.getData( url_index, loc_param )
     msg = ''
     for r in res_list:
         print( str(datetime.now()).split('.')[0], r )
@@ -29,7 +26,7 @@ def replyAptData(date_param, user, loc_param='11710'):
     if msg:
         noti.sendMessage( user, msg )
     else:
-        noti.sendMessage( user, '%s 기간에 해당하는 데이터가 없습니다.'%date_param )
+        noti.sendMessage( user, '%s 지역에 해당하는 데이터가 없습니다.'%loc_param )
 
 def save( user, loc_param ):
     conn = sqlite3.connect('users.db')
@@ -76,7 +73,7 @@ def handle(msg):
         noti.sendMessage(chat_id, '모르는 명령어입니다.\n지역 [지역번호], 저장 [지역번호], 확인 중 하나의 명령을 입력하세요.')
 
 
-today = date.today()
+today = date.today()  
 current_month = today.strftime('%Y%m')
 
 print( '[',today,']received token :', noti.TOKEN )
