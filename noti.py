@@ -34,9 +34,50 @@ def getData(url_index, loc_param):
     response = requests.get(url_list[url_index], params=params)
     
     root = ET.fromstring(response.text)
+    
+    if url_index == 0 :
+        for item in root.iter('row'):
+            if item.findtext('BSN_STATE_NM') == '폐업' :
+                continue
+            area = item.findtext('SIGUN_NM') #지역
+            name = item.findtext('BIZPLC_NM') #시설명
+            address = item.findtext('REFINE_ROADNM_ADDR') #주소
 
-        if row:
-            res_list.append(row.strip())
+            res_list.append('<' + area + '> ' + name + ' 주소 : ' + address)
+    
+    if url_index == 1:
+        for item in root.iter('row'):
+            Harea = item.findtext('SIGUN_NM')  # 지역
+            name = item.findtext('HOSPTL_NM') #병원명
+            qual = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
+
+            res_list.append('<' + Harea + '> ' + name + ' 진료 과목 : ' + qual)
+    
+    if url_index == 2:
+        for item in root.iter('row'):
+            area = item.findtext('SIGUNGU_NM') #지역
+            name = item.findtext('FACLT_NM') #시설명
+            telnum = item.findtext('DETAIL_TELNO') #전화번호
+            
+            res_list.append('<' + area + '> ' + name + ' 전화번호 : ' + telnum)
+    
+    if url_index == 3 :
+        for item in root.iter('row'):
+            Harea = item.findtext(('SIGUN_NM')) #지역
+            name = item.findtext('FACLT_NM') #시설명
+            telno = item.findtext('DETAIL_TELNO') #전화번호
+            
+            res_list.append('<' + Harea + '> ' + name + ' 전화번호 : ' + telno)
+    
+    if url_index == 4 :
+        for item in root.iter('row'):
+            area = item.findtext(('SIGUN_NM'))  # 지역
+            name = item.findtext('FACLT_NM') #시설명
+            lot_type = item.findtext('LOTOUT_TYPE') #분양유형
+            telno = item.findtext('DETAIL_TELNO') #전화번호
+            
+            res_list.append('<' + area + '> ' + name + ' 분양유형 : ' + lot_type + ' 전화번호 : ' + telno)
+    
     return res_list
 
 def sendMessage(user, msg):
