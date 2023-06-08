@@ -5,20 +5,29 @@ import sys
 import time
 import sqlite3
 import telepot
+import requests
 from pprint import pprint
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 from datetime import date, datetime, timedelta
 import traceback
+import xml.etree.ElementTree as ET
+import keys
 
-key = 'sea100UMmw23Xycs33F1EQnumONR%2F9ElxBLzkilU9Yr1oT4TrCot8Y2p0jyuJP72x9rG9D8CN5yuEs6AS2sAiw%3D%3D'
+key = keys.key
 TOKEN = '6009726152:AAGffpVsw-WD5EUwZeqEfD_H9YFOAlHui1o'
 MAX_MSG_LENGTH = 300
-baseurl = 'http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?ServiceKey='+key
 bot = telepot.Bot(TOKEN)
 
-def getData(loc_param, date_param):
+url_list = []
+
+url_list.append('https://openapi.gg.go.kr/OldPersonRecuperationFacility')
+url_list.append('https://openapi.gg.go.kr/OldPersonSpecialityHospital')
+url_list.append('https://openapi.gg.go.kr/OldpsnMedcareWelfa')
+url_list.append('https://openapi.gg.go.kr/OldpsnJobSportInst')
+url_list.append('https://openapi.gg.go.kr/OldpsnHousngWelfaclt')
+
     res_list = []
     url = baseurl+'&LAWD_CD='+loc_param+'&DEAL_YMD='+date_param
     #print(url)
