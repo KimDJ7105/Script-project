@@ -116,7 +116,7 @@ class MainGUI:
                 self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
             # 약국 검색
             url = f'https://openapi.gg.go.kr/Parmacy'
-            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 300, 'SIGUN_NM': search_query}
+            params = {'KEY': key, 'Type': 'xml', 'pIndex': 1, 'pSize': 300}
             response = requests.get(url, params=params)
 
             root = ET.fromstring(response.text)
