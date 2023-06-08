@@ -2,3 +2,5 @@
 keys.py
 __pycache__/keys.cpython-311.pyc
 bookmark_data.pkl
+__pycache__/noti.cpython-311.pyc
+__pycache__/teller.cpython-311.pyc
