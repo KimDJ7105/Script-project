@@ -11,7 +11,7 @@ import pickle
 from tkinter import messagebox
 from keys import *
 import subprocess
-import spam
+import NV
 
 gmaps = googlemaps.Client(key=google_key)
 
@@ -28,6 +28,11 @@ class MainGUI:
         
         python_script = "teller.py"
         subprocess.Popen(["python", python_script])
+
+    def dis(self):
+        #set_point 함수는 시설의 위치를 지정해주는 함수, 즐겨찾기 저장 방식을 개선해야 사용가능
+        #NV.set_point()
+        NV.run()
     
     def zoom_in(self, tab_index):
         # 확대 레벨 증가
@@ -519,7 +524,7 @@ class MainGUI:
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성. 즐겨찾기 취소 기능 버튼.
         Button(self.framelist[5],text='', image=imageT, width=50, height= 50, command=self.telon).place(x=310, y=10)
         Button(self.framelist[5], text='', image=image, width=50, height= 50).place(x=190, y=10)
-        Button(self.framelist[5], text='', image=imageNV, width=50, height=50).place(x=250, y=10)
+        Button(self.framelist[5], text='', image=imageNV, width=50, height=50, command=self.dis).place(x=250, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
         self.lboxlist = [] #리스트 박스가 담길 리스트
@@ -557,4 +562,4 @@ class MainGUI:
         window.mainloop()
 
 
-MainGUI()
+root = MainGUI()
