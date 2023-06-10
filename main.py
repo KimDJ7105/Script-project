@@ -459,7 +459,7 @@ class MainGUI:
             self.canvlist[tab_index].create_text(20 + 1*barWidth + (barWidth / 2),cvheight - 10,text="총 세대수",tags='data')
             self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="입소 현원",tags='data')
             self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
-        
+
         #선택된 시설의 구글맵 출력
         geocode_result = gmaps.geocode(self.ad_list[cur[0]])
         if geocode_result:
