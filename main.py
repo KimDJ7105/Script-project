@@ -206,13 +206,9 @@ class MainGUI:
                 
                 if int(qual) > self.max_qual :
                     self.max_qual = int(qual)
-                
-                #listbox에 검색 결과 출력, 추후 출력 내용 변경 필요
-                #위치 정보도 있음, 홈페이지 주소도.
+
                 self.lboxlist[tab_index].insert(END,"병원명 : " + name + " 병상 수 : " + capa  + " 진료 과목 내용 : (" + qual + "개), " + area)
-                #아래 코드로 바꾸려는데 그래프에서 오류 발생.
-                #self.lboxlist[tab_index].insert(END, ' <' + Harea + '> ' + name)
-            
+
             barWidth = (cvwidth - 10) / 4 - 10
             
             self.canvlist[tab_index].create_rectangle(10 + 0*barWidth + 5, cvheight - (avg_capa // count / self.max_capa) * cvheight - 10, 10 + 1*barWidth,cvheight - 20,tags='avg',fill='red')
