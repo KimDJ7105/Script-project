@@ -7,7 +7,6 @@ import io
 import requests
 import tkinter.ttk
 import xml.etree.ElementTree as ET
-import pickle
 from tkinter import messagebox
 from keys import *
 import subprocess
@@ -78,31 +77,49 @@ class MainGUI:
             self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img, tags="map_image")
             self.mapcanv[tab_index].image = img  # 새로운 이미지 참조 저장
 
-    def add_to_bookmarks(self, bookmark):
-        # 즐겨찾기에 항목 추가하는 메소드
+    def add_bookmarks(self, bookmark):
         self.bookmarks.append(bookmark)
-        with open(self.bookmark_file, "wb") as f:
-            pickle.dump(self.bookmarks, f)
+        self.save_bookmarks_to_xml()
 
     def load_bookmarks(self):
-        # 저장된 즐겨찾기 정보를 파일에서 로드하는 메소드
         try:
-            with open(self.bookmark_file, "rb") as f:
-                self.bookmarks = pickle.load(f)
-        except FileNotFoundError:
-            # 파일이 존재하지 않는 경우 빈 리스트로 초기화
+            tree = ET.parse(self.bookmark_file)
+            root = tree.getroot()
+            for bookmark_elem in root.findall("bookmark"):
+                bookmark = bookmark_elem.text
+                self.bookmarks.append(bookmark)
+                self.lboxlist[5].insert(END, bookmark)
+        except (FileNotFoundError, ET.ParseError):
+            # 파일 존재X 면 초기화
             self.bookmarks = []
 
+    def save_bookmarks_to_xml(self):
+        root = ET.Element("bookmarks")
+        for bookmark in self.bookmarks:
+            bookmark_elem = ET.SubElement(root, "bookmark")
+            bookmark_elem.text = bookmark
+        tree = ET.ElementTree(root)
+        tree.write(self.bookmark_file)
+
     def add_current_to_bookmarks(self, tab_index):
-        # 현재 선택된 정보를 즐겨찾기에 추가하는 메소드
         selected_index = self.lboxlist[tab_index].curselection()
         if selected_index:
-            selected_info = self.lboxlist[tab_index].get(selected_index[0])
-            self.add_to_bookmarks(selected_info)
+            selected_info = self.lboxlist[tab_index].get(selected_index)
+            self.add_bookmarks(selected_info)
             messagebox.showinfo("즐겨찾기 추가", "즐겨찾기에 추가되었습니다.")
+            self.lboxlist[5].insert(END, selected_info)  # 해당 탭에 즐겨찾기 추가
 
-            # 즐겨찾기된 정보를 해당 리스트박스에 추가
-            self.lboxlist[5].insert(END, selected_info)
+    def remove_bookmarks(self):
+        selected_index = self.lboxlist[5].curselection()
+        if selected_index:
+            selected_info = self.lboxlist[5].get(selected_index[0])
+            response = messagebox.askyesno("즐겨찾기 삭제", "선택한 즐겨찾기를 삭제하시겠습니까?")
+            if response:
+                if selected_info in self.bookmarks:
+                    self.bookmarks.remove(selected_info)
+                    self.save_bookmarks_to_xml()
+                messagebox.showinfo("즐겨찾기 삭제", "즐겨찾기에서 삭제되었습니다.")
+                self.lboxlist[5].delete(selected_index[0])  # 리스트박스에서 삭제
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -382,7 +399,7 @@ class MainGUI:
         
         if not cur :
             return
-        
+
         item = self.lboxlist[tab_index].get(cur)
 
         if tab_index == 0:
@@ -471,11 +488,8 @@ class MainGUI:
         window.title("노인통합 서비스")
         window.geometry("800x600")
         # 즐겨찾기 정보를 저장할 파일 경로
-        self.bookmark_file = "bookmark_data.pkl"
-        self.bookmarks = []  # 즐겨찾기 정보를 담을 리스트
-
-        # 저장된 즐겨찾기 정보 로드
-        self.load_bookmarks()
+        self.bookmark_file = "bookmark_data.xml"
+        self.bookmarks = []  # 즐겨찾기 정보
 
         bg_image_path = "resource/tree.png"
         image = PhotoImage(file='resource/star.png')
@@ -521,7 +535,7 @@ class MainGUI:
             Button(self.framelist[i], text='', image=ms_image, width=18, height=18, command=lambda i=i: self.zoom_out(i)).place(x=470, y=250 + mapcvheight)
         #즐겨찾기 노트북에서만 텔레그램 연동 버튼 생성. 즐겨찾기 취소 기능 버튼.
         Button(self.framelist[5],text='', image=imageT, width=50, height= 50, command=self.telon).place(x=310, y=10)
-        Button(self.framelist[5], text='', image=image, width=50, height= 50).place(x=190, y=10)
+        Button(self.framelist[5], text='', image=image, width=50, height= 50, command=self.remove_bookmarks).place(x=190, y=10)
         Button(self.framelist[5], text='', image=imageNV, width=50, height=50, command=self.dis).place(x=250, y=10)
 
         self.entrylist = [] #엔트리가 담길 리스트
@@ -556,6 +570,9 @@ class MainGUI:
         #선택 부분
         for i in range(6):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
+
+        # 저장된 즐겨찾기 정보 로드
+        self.load_bookmarks()
 
         window.mainloop()
 
