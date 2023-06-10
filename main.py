@@ -492,8 +492,6 @@ class MainGUI:
 
         self.framelist = []
 
-        #for _ in range(6):
-            #self.framelist.append(Frame(window))
         for _ in range(6):
             frame = ttk.Frame(nb)
             frame.pack()
