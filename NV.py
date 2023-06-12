@@ -7,8 +7,8 @@ lon2 = 0
 
 def set_point(_lat,_lon) :
     global lat2, lon2
-    lat2 = _lat
-    lon2 = _lon
+    lat2 = float(_lat)
+    lon2 = float(_lon)
 
 def run() :
     def calculate_distance():
@@ -17,7 +17,7 @@ def run() :
         
         distance = spam.distance(lat1, lon1, lat2, lon2)
         
-        result_label.config(text=f"거리: {distance} km")
+        result_label.config(text=f"거리: {distance:.2f} km")
     
     distance_window = tk.Tk()
     distance_window.title("거리 계산")
