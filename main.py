@@ -143,6 +143,8 @@ class MainGUI:
                 area = item.findtext('SIGUN_NM') #지역
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 self.ad_list.append(address)
                 self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
@@ -196,6 +198,8 @@ class MainGUI:
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
                 area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 avg_capa += int(capa)
                 avg_qual += int(qual)
@@ -250,6 +254,8 @@ class MainGUI:
                 capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
                 cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #입소 현원
                 cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사 현원
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 avg_capa += int(capa)
                 if self.max_capa < int(capa) :
@@ -306,6 +312,8 @@ class MainGUI:
                 telno = item.findtext('DETAIL_TELNO') #전화번호
                 area = item.findtext('FACLT_AR_SUM')
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 avg_qual += int(qual)
                 avg_area += int(area)
@@ -358,6 +366,8 @@ class MainGUI:
                 capa = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
                 cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #현재 입주 인수
                 cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사자 현원
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
                 self.index5_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 
