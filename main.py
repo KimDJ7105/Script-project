@@ -140,14 +140,12 @@ class MainGUI:
     def remove_bookmarks(self):
         selected_index = self.lboxlist[5].curselection()
         if selected_index:
-            selected_info = self.lboxlist[5].get(selected_index[0])
             response = messagebox.askyesno("즐겨찾기 삭제", "선택한 즐겨찾기를 삭제하시겠습니까?")
             if response:
-                if selected_info in self.bookmarks:
-                    self.bookmarks.remove(selected_info)
-                    self.save_bookmarks_to_xml()
+                self.lboxlist[5].delete(selected_index[0])
+                del self.bookmarks[selected_index[0]]
+                self.save_bookmarks_to_xml()
                 messagebox.showinfo("즐겨찾기 삭제", "즐겨찾기에서 삭제되었습니다.")
-                self.lboxlist[5].delete(selected_index[0])  # 리스트박스에서 삭제
 
     def search(self, tab_index):
         search_query = self.entrylist[tab_index].get()
@@ -629,19 +627,30 @@ class MainGUI:
             self.entrylist.append(Entry(self.framelist[i], width=19))
             self.entrylist[i].place(x=10, y=10)
 
-            self.lboxlist.append(Listbox(self.framelist[i], width=57, height=10))
-            self.lboxlist[i].place(x=10, y=80)
+            if i != 5 :
+                self.lboxlist.append(Listbox(self.framelist[i], width=57, height=10))
+                self.lboxlist[i].place(x=10, y=80)
+            
+            if i == 5 :
+                self.lboxlist.append(Listbox(self.framelist[i], width=57, height=30))
+                self.lboxlist[i].place(x=10, y=80)
             # 리스트박스 스크롤바
             scrollbar = Scrollbar(self.framelist[i])
             self.lboxlist[i].config(yscrollcommand=scrollbar.set)
             scrollbar.config(command=self.lboxlist[i].yview)
-            scrollbar.place(x=413, y=80, height=164)
-
-            self.canvlist.append(Canvas(self.framelist[i], bg='white', width=cvwidth, height=cvheight))
-            self.canvlist[i].place(x=10, y=250)
+            
+            if i != 5 :
+                scrollbar.place(x=413, y=80, height=164)
+            if i == 5 : 
+                scrollbar.place(x=413, y=80, height=484)
 
             self.mapcanv.append(Canvas(self.framelist[i], bg='white', width=mapcvwidth, height=mapcvheight))
             self.mapcanv[i].place(x=440, y=250)
+
+            if i == 5 :
+                break
+            self.canvlist.append(Canvas(self.framelist[i], bg='white', width=cvwidth, height=cvheight))
+            self.canvlist[i].place(x=10, y=250)
 
         self.ad_list = []
         self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
