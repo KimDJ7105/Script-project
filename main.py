@@ -521,24 +521,45 @@ class MainGUI:
             self.canvlist[tab_index].create_text(20 + 3*barWidth + (barWidth / 2),cvheight - 10,text="입소 현원",tags='data')
             self.canvlist[tab_index].create_text(20 + 5*barWidth + (barWidth / 2),cvheight - 10,text="종사 현원",tags='data')
 
-        #선택된 시설의 구글맵 출력
-        geocode_result = gmaps.geocode(self.ad_list[cur[0]])
-        if geocode_result:
-            location = geocode_result[0]['geometry']['location']
-            lat, lng = location['lat'], location['lng']
-            self.zoom_level = 14
-            map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
-            # 마커 추가
-            marker_url = f"&markers=color:red%7C{lat},{lng}"
-            map_url += marker_url
+        if tab_index != 5 :
+            #선택된 시설의 구글맵 출력
+            geocode_result = gmaps.geocode(self.ad_list[cur[0]])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                self.zoom_level = 14
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
+                # 마커 추가
+                marker_url = f"&markers=color:red%7C{lat},{lng}"
+                map_url += marker_url
 
-            # 구글 지도 표시
-            img_data = requests.get(map_url).content
-            img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
 
-            # 선택된 항목에 해당하는 이미지 출력
-            self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
-            self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
+        
+        elif tab_index == 5 :
+            #즐겨찾기에서 선택한 시설 지도 출력
+            geocode_result = gmaps.geocode(self.bookmarks[cur[0]][2])
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lng = location['lat'], location['lng']
+                self.zoom_level = 14
+                map_url = f"https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={self.zoom_level}&size=400x300&key={google_key}"
+                # 마커 추가
+                marker_url = f"&markers=color:red%7C{lat},{lng}"
+                map_url += marker_url
+
+                # 구글 지도 표시
+                img_data = requests.get(map_url).content
+                img = ImageTk.PhotoImage(Image.open(io.BytesIO(img_data)))
+
+                # 선택된 항목에 해당하는 이미지 출력
+                self.mapcanv[tab_index].create_image(0, 0, anchor="nw", image=img)
+                self.mapcanv[tab_index].image = img  # 저장하여 참조 유지
 
     def __init__(self):
         window = tk.Tk()
