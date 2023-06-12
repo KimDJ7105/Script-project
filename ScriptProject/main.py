@@ -668,4 +668,4 @@ class MainGUI:
         window.mainloop()
 
 
-root = MainGUI()
+MainGUI()
