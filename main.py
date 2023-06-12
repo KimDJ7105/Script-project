@@ -82,52 +82,55 @@ class MainGUI:
         self.save_bookmarks_to_xml()
 
     def load_bookmarks(self):
-        try:
-            tree = ET.parse(self.bookmark_file)
-            root = tree.getroot()
-            for bookmark_elem in root.findall("bookmark"):
-                bookmark = bookmark_elem.text
-                self.bookmarks.append(bookmark)
-                self.lboxlist[5].insert(END, bookmark)
-        except (FileNotFoundError, ET.ParseError):
-            # 파일 존재X 면 초기화
-            self.bookmarks = []
+        tree = ET.parse(self.bookmark_file)
+        root = tree.getroot()
+        
+        for item in root.iter('bookmark'):
+            area = item.findtext('Area') #지역
+            name = item.findtext('Name') #시설명
+            address = item.findtext('Adress') #주소
+            
+            lat = item.findtext('Lat')
+            logt = item.findtext('Logt')
+            
+            self.bookmarks.append((area, name, address, lat,  logt))
+            self.lboxlist[5].insert(END,' <' + area + '> ' + name)
 
     def save_bookmarks_to_xml(self):
-        root = ET.Element("bookmarks")
-        for bookmark in self.bookmarks:
-            bookmark_elem = ET.SubElement(root, "bookmark")
-            bookmark_elem.text = bookmark
-        tree = ET.ElementTree(root)
-        tree.write(self.bookmark_file)
-
-    def add_current_to_bookmarks(self, tab_index):
-        selected_index = self.lboxlist[tab_index].curselection()
-        if selected_index:
-            data = self.data_list[selected_index[0]]
-            
-            root = ET.Element('Bookmarks')
-            
+        root = ET.Element('Bookmarks')
+        
+        for data in self.bookmarks :
             subroot = ET.SubElement(root,'bookmark')
             
             area_data = ET.SubElement(subroot,'Area')
             area_data.text = data[0]
-            
+
             name_data = ET.SubElement(subroot,'Name')
             name_data.text = data[1]
-            
+
             address_data = ET.SubElement(subroot,'Adress')
             address_data.text = data[2]
-            
+
             lat_data = ET.SubElement(subroot,'Lat')
             lat_data.text = data[3]
-            
+
             logt_data = ET.SubElement(subroot,'Logt')
             logt_data.text = data[4]
+
+        tree = ET.ElementTree(root)
+        tree.write(self.bookmark_file,encoding='utf-8',xml_declaration=True)
+        
+
+    def add_current_to_bookmarks(self, tab_index):
+        selected_index = self.lboxlist[tab_index].curselection()
+        if selected_index:
+            #print(self.data_list[selected_index[0]])
+            data = self.data_list[selected_index[0]]
+            self.bookmarks.append(data)
             
-            tree = ET.ElementTree(root)
-            tree.write(self.bookmark_file,encoding='utf-8')
+            self.lboxlist[5].insert(END,' <' + data[0] + '> ' + data[1])
             
+            self.save_bookmarks_to_xml()
             messagebox.showinfo("즐겨찾기 추가", "즐겨찾기에 추가되었습니다.")
             #self.lboxlist[5].insert(END, selected_info)  # 해당 탭에 즐겨찾기 추가
 
@@ -414,7 +417,7 @@ class MainGUI:
                 lat = item.findtext('REFINE_WGS84_LAT')
                 logt = item.findtext('REFINE_WGS84_LOGT')
                 
-                self.data_list.append( (Harea, name, address, lat, logt))
+                self.data_list.append( (area, name, address, lat, logt))
                 
                 self.ad_list.append(address)
                 self.index5_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
