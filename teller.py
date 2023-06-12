@@ -62,23 +62,38 @@ def handle(msg):
 
     if text.endswith('요양시설') and len(args)>1:
         print('try to 요양시설, 지역 ', args[0])
-        replyAptData( 0, chat_id, args[0] )
+        if args[0] == '모든' : 
+            replyAptData( 0, chat_id)
+        else:
+            replyAptData( 0, chat_id, args[0] )
     
     elif text.endswith('전문병원') and len(args)>1:
         print('try to 전문병원, 지역 ', args[0])
-        replyAptData( 1, chat_id, args[0] )
+        if args[0] == '모든' : 
+            replyAptData( 1, chat_id)
+        else:
+            replyAptData( 1, chat_id, args[0] )
     
     elif text.endswith('의료복지시설') and len(args)>1:
         print('try to 의료복지시설, 지역 ', args[0])
-        replyAptData( 2, chat_id, args[0] )
+        if args[0] == '모든' : 
+            replyAptData( 2, chat_id)
+        else:
+            replyAptData( 2, chat_id, args[0] )
     
     elif text.endswith('일자리지원기관') and len(args)>1:
         print('try to 일자리지원기관, 지역 ', args[0])
-        replyAptData( 3, chat_id, args[0] )
+        if args[0] == '모든' : 
+            replyAptData( 3, chat_id)
+        else:
+            replyAptData( 3, chat_id, args[0] )
     
     elif text.endswith('주거복지시설') and len(args)>1:
         print('try to 주거복지시설, 지역 ', args[0])
-        replyAptData( 4, chat_id, args[0] )
+        if args[0] == '모든' : 
+            replyAptData( 4, chat_id)
+        else:
+            replyAptData( 4, chat_id, args[0] )
     
     elif text.startswith('저장')  and len(args)>1:
         print('try to 저장', args[1])
