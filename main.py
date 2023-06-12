@@ -104,10 +104,32 @@ class MainGUI:
     def add_current_to_bookmarks(self, tab_index):
         selected_index = self.lboxlist[tab_index].curselection()
         if selected_index:
-            selected_info = self.lboxlist[tab_index].get(selected_index)
-            self.add_bookmarks(selected_info)
+            data = self.data_list[selected_index[0]]
+            
+            root = ET.Element('Bookmarks')
+            
+            subroot = ET.SubElement(root,'bookmark')
+            
+            area_data = ET.SubElement(subroot,'Area')
+            area_data.text = data[0]
+            
+            name_data = ET.SubElement(subroot,'Name')
+            name_data.text = data[1]
+            
+            address_data = ET.SubElement(subroot,'Adress')
+            address_data.text = data[2]
+            
+            lat_data = ET.SubElement(subroot,'Lat')
+            lat_data.text = data[3]
+            
+            logt_data = ET.SubElement(subroot,'Logt')
+            logt_data.text = data[4]
+            
+            tree = ET.ElementTree(root)
+            tree.write(self.bookmark_file,encoding='utf-8')
+            
             messagebox.showinfo("즐겨찾기 추가", "즐겨찾기에 추가되었습니다.")
-            self.lboxlist[5].insert(END, selected_info)  # 해당 탭에 즐겨찾기 추가
+            #self.lboxlist[5].insert(END, selected_info)  # 해당 탭에 즐겨찾기 추가
 
     def remove_bookmarks(self):
         selected_index = self.lboxlist[5].curselection()
@@ -127,6 +149,7 @@ class MainGUI:
         root = NONE
         
         self.ad_list.clear()
+        self.data_list.clear()
         self.canvlist[tab_index].delete('all')
         
         if tab_index == 0:
@@ -144,6 +167,10 @@ class MainGUI:
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
                 
+                lat = item.findtext('REFINE_WGS84_LAT')
+                logt = item.findtext('REFINE_WGS84_LOGT')
+                
+                self.data_list.append( (area, name, address, lat,  logt))
                 self.ad_list.append(address)
                 self.lboxlist[tab_index].insert(END,' <' + area + '> ' + name)
             # 약국 검색
@@ -195,7 +222,14 @@ class MainGUI:
                 capa = item.findtext('SICKBD_CNT') #병상 수
                 qual = item.findtext('TREAT_SBJECT_CNT') #진료 과목 수
                 area = item.findtext('TREAT_SBJECT_DTLS') #진료 과목 내용
-                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                address = item.findtext('REFINE_ROADNM_ADDR')
+                
+                lat = item.findtext('REFINE_WGS84_LAT')
+                logt = item.findtext('REFINE_WGS84_LOGT')
+                
+                self.ad_list.append(address)
+                
+                self.data_list.append( (Harea, name, address, lat, logt))
                 
                 avg_capa += int(capa)
                 avg_qual += int(qual)
@@ -251,6 +285,7 @@ class MainGUI:
                 cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #입소 현원
                 cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사 현원
                 
+                
                 avg_capa += int(capa)
                 if self.max_capa < int(capa) :
                     self.max_capa = int(capa)
@@ -263,8 +298,14 @@ class MainGUI:
                 
                 count += 1
                 
+                address = item.findtext('REFINE_ROADNM_ADDR')
+                lat = item.findtext('REFINE_WGS84_LAT')
+                logt = item.findtext('REFINE_WGS84_LOGT')
+                
+                self.data_list.append( (area, name, address, lat, logt))
+                
                 self.index3_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
-                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                self.ad_list.append(address)
                 self.lboxlist[tab_index].insert(END, ' <' + area + '> ' + name + "   전화번호 : " + telnum)
             
             barWidth = (cvwidth - 10) / 6 - 10
@@ -305,7 +346,13 @@ class MainGUI:
                 qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사자현원
                 telno = item.findtext('DETAIL_TELNO') #전화번호
                 area = item.findtext('FACLT_AR_SUM')
-                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                
+                address = item.findtext('REFINE_ROADNM_ADDR')
+                lat = item.findtext('REFINE_WGS84_LAT')
+                logt = item.findtext('REFINE_WGS84_LOGT')
+                
+                self.data_list.append( (Harea, name, address, lat, logt))
+                self.ad_list.append(address)
                 
                 avg_qual += int(qual)
                 avg_area += int(area)
@@ -358,7 +405,14 @@ class MainGUI:
                 capa = item.findtext('EXPA_HSHLD_CNT_SUM') #총 세대수
                 cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #현재 입주 인수
                 cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사자 현원
-                self.ad_list.append(item.findtext('REFINE_ROADNM_ADDR'))
+                
+                address = item.findtext('REFINE_ROADNM_ADDR')
+                lat = item.findtext('REFINE_WGS84_LAT')
+                logt = item.findtext('REFINE_WGS84_LOGT')
+                
+                self.data_list.append( (Harea, name, address, lat, logt))
+                
+                self.ad_list.append(address)
                 self.index5_tuple_list.append((int(capa), int(cur_size), int(cur_qual)))
                 
                 avg_capa += int(capa)
@@ -562,7 +616,8 @@ class MainGUI:
         self.index3_tuple_list = [] #tab_index 3 의료복지센터의 그래프에 필요한 정보를 (입소 정원 , 입소 현원, 종사 현원) 으로 저장하는 리스트
         self.index4_tuple_list = [] #tab_index 4 일자리지원센터의 그래프에 필요한 정보를 (총면적, 종사 현원)으로 저장하는 리스트
         self.index5_tuple_list = [] #tab_index 5 노인주거복지시설의 그래프에 필요한 정보를 (세대수, 입소 현원, 종사자 현원) 으로 저장하는 리스트
-
+        self.data_list = [] #즐겨찾기 추가를 위해서 이름, 주소, 위도 경도를 저장하는 리스트
+        
         #선택 부분
         for i in range(6):
             self.lboxlist[i].bind("<<ListboxSelect>>", lambda event, i=i: self.on_select(i))
