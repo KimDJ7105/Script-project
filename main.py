@@ -30,8 +30,12 @@ class MainGUI:
 
     def dis(self):
         #set_point 함수는 시설의 위치를 지정해주는 함수, 즐겨찾기 저장 방식을 개선해야 사용가능
-        #NV.set_point()
-        NV.run()
+        
+        selected_index = self.lboxlist[5].curselection()
+        if selected_index:
+            data = self.bookmarks[selected_index[0]]
+            NV.set_point(data[3],data[4])
+            NV.run()
     
     def zoom_in(self, tab_index):
         # 확대 레벨 증가
@@ -119,7 +123,6 @@ class MainGUI:
 
         tree = ET.ElementTree(root)
         tree.write(self.bookmark_file,encoding='utf-8',xml_declaration=True)
-        
 
     def add_current_to_bookmarks(self, tab_index):
         selected_index = self.lboxlist[tab_index].curselection()
