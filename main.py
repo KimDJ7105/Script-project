@@ -166,6 +166,8 @@ class MainGUI:
                 area = item.findtext('SIGUN_NM') #지역
                 name = item.findtext('BIZPLC_NM') #시설명
                 address = item.findtext('REFINE_ROADNM_ADDR') #주소
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 lat = item.findtext('REFINE_WGS84_LAT')
                 logt = item.findtext('REFINE_WGS84_LOGT')
@@ -284,6 +286,8 @@ class MainGUI:
                 capa = item.findtext('ENTRNC_PSN_CAPA') #입소 정원
                 cur_size = item.findtext('ENTRNC_PSTPSN_SUM') #입소 현원
                 cur_qual = item.findtext('ENFLPSN_PSTPSN_SUM') #종사 현원
+                lat = item.findtext('REFINE_WGS84_LAT')  # 위도
+                lng = item.findtext('REFINE_WGS84_LOGT')  # 경도
                 
                 
                 avg_capa += int(capa)
